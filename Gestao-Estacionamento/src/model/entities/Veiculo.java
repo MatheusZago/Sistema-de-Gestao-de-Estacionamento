@@ -5,7 +5,7 @@ public interface Veiculo {
 
 
 //	//Não sei se vai no veiculo, rever dps
-	void entrar();
+	void entrar(String placa);
 	void sair();
 	
 

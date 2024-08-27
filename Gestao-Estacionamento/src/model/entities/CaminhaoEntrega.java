@@ -19,7 +19,7 @@ public class CaminhaoEntrega extends VeiculoCadastrado{
 	}
 
 	@Override
-	public void entrar() {
+	public void entrar(String placa) {
 		// TODO Auto-generated method stub
 		
 	}

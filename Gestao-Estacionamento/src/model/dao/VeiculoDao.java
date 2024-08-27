@@ -6,6 +6,7 @@ import model.entities.VeiculoCadastrado;
 public interface VeiculoDao {
 	
 	void insert(VeiculoCadastrado veiculo);
+	VeiculoCadastrado searchCadastroByPlaca(String placa);
 //	void update();
 //	void deleteByPlaca();
 	//DPS BOAAR OS OUTROS
