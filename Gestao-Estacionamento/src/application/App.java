@@ -40,7 +40,7 @@ public class App {
 						
 						//2 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO: (FEITO)
 						Mensalista veiculo = new Mensalista(placa);						
-						veiculo.entrar2(placa);
+						veiculo.entrar(placa);
 						
 
 						
@@ -69,10 +69,10 @@ public class App {
 						//Ta criando veiculos com cash de acordo com o tipo deles
 						if (modelo == TipoVeiculo.CAMINHAO) {
 							cadastrado = new CaminhaoEntrega(placa, modelo);
-							((CaminhaoEntrega) cadastrado).cadastrar(cadastrado);
+							((CaminhaoEntrega) cadastrado).cadastrar(cadastrado); //Ta especificando qual é.
 						} else {
 							cadastrado = new Mensalista(placa, modelo);
-							((Mensalista) cadastrado).cadastrar(cadastrado);
+							((Mensalista) cadastrado).cadastrar(cadastrado); //Ta especificando qual é
 						}
 
 
