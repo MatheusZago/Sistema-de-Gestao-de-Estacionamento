@@ -1,5 +1,6 @@
 package model.services;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import model.entities.Veiculo;
@@ -14,7 +15,7 @@ public class ServicoCancela {
 		String modelo = veiculo.getModelo().name(); //Transformando TipoModelo em String 
 		String opcoes;
 		String[] arrayOpcoes;
-		int escolha;
+		int escolha = 0;
 		boolean opcaoValida = false;
 		
 		switch (modelo) {
@@ -42,21 +43,27 @@ public class ServicoCancela {
 		do {
 			System.out.println("Um(a) " + modelo + " pode entrar pela(s) cancela(s): " + opcoes );
 			
-			escolha = sc.nextInt();
-
-			//Aqui ele vai percorrer o Array para ver se o numero digite tem nas opções válidas
-			for(String opcao : arrayOpcoes) {
-				if(opcao.equals(String.valueOf(escolha))) {
-					opcaoValida = true;
-					break;
-				} else if(escolha > 5 || escolha < 1) {
-					System.out.println("Escolha entre uma cancela existente.");
-				} else if(opcaoValida == false ) {
-					System.out.println("Escolha entre uma cancela própria para " + veiculo.getModelo());
-				} else {
-					//TODO arrumar um jeito de não travar
-					System.out.println("Valor invalido, tente novamente por favor.");
+			try {
+				escolha = sc.nextInt();
+				
+				// Aqui verifica se a escolha está nas opções válidas
+				opcaoValida = false; // Reinicia a validação para cada nova tentativa
+				
+				for (String opcao : arrayOpcoes) {
+					if (opcao.equals(String.valueOf(escolha))) {
+						opcaoValida = true;
+						break;
+					}
 				}
+				
+				if (opcaoValida) {
+					System.out.println("Passou pela catraca " + escolha);
+				} else {
+					System.out.println("Escolha entre uma catraca própria para " + modelo);
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Entrada inválida. Por favor, digite um número.");
+				sc.next(); // Limpa o buffer do scanner
 			}
 						
 		} while (opcaoValida == false);
