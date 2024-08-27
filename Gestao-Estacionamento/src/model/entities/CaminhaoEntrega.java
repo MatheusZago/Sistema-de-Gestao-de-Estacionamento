@@ -3,13 +3,12 @@ package model.entities;
 import model.dao.DaoFactory;
 import model.enums.TipoVeiculo;
 
+//Classe para representar o Caminhão que entrega, que implementa veiculos e herda de veiculos cadastrados
 public class CaminhaoEntrega extends VeiculoCadastrado{
-
 
 
 	public CaminhaoEntrega(String placa, TipoVeiculo modelo) {
 		super(placa, modelo);
-		// TODO Auto-generated constructor stub
 	}
 
 //	@Override

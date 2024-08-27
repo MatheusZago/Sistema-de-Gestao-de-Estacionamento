@@ -2,6 +2,7 @@ package model.entities;
 
 import model.enums.TipoVeiculo;
 
+//Classe abstrata para os Veiculos Cadastrados, implementa Veiculo e adiciona metos que todos terão.
 public abstract class VeiculoCadastrado implements Veiculo{
 	
 

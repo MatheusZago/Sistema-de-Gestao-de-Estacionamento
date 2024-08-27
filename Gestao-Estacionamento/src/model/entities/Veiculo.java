@@ -1,5 +1,6 @@
 package model.entities;
 
+//Interface de Veiculos, que será implmenetada por tdos os veiculos
 public interface Veiculo {
 
 

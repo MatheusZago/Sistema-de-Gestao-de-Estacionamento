@@ -1,5 +1,6 @@
 package model.entities;
 
+//Classe para implementar Veiculos de Serviço Publico, que não são cadastrados.
 public class ServicoPublico implements Veiculo{
 
 

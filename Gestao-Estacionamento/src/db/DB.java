@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 public class DB {
-	
+	//Classe para criar conexão com banco de dados e fechar essas conexões.
 	private static Connection conn = null;
 	
 	//Criando conexão com o banco de dados
@@ -39,8 +39,7 @@ public class DB {
 		}
 	}
 	
-	//Ta fazendo esse método usar o try catch aqui, se nn tivesse teria q usar
-	//Try catch cada vez q fosse usar o conn.close(
+	//Metodos usados para fechar conexões, são feitos aqui para que tenham try catch imbutido
 	public static void closeConnection() {
 		if(conn != null) {
 			try {

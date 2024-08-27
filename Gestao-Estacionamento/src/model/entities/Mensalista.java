@@ -1,7 +1,9 @@
 package model.entities;
 
+import model.dao.DaoFactory;
 import model.enums.TipoVeiculo;
 
+//Classe para representar os mensalistas, que implmeneta veiculos e herda de Veiculos Cadastrados
 public class Mensalista extends VeiculoCadastrado{
 
 
@@ -26,7 +28,7 @@ public class Mensalista extends VeiculoCadastrado{
 
 	@Override
 	public void cadastrar(VeiculoCadastrado veiculo) {
-		// TODO Auto-generated method stub
+		DaoFactory.criarVeiculoDao().insert(veiculo);;
 		
 	}
 

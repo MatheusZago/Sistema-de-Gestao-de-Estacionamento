@@ -5,7 +5,7 @@ import model.dao.impl.VeiculoDaoJBDC;
 
 public class DaoFactory {
 	
-	//Aqui está criando a conexão com o JDBC
+	//A Fabrica Dao serve par criar conexões especificas, caso quisesse outra conexão fora JBDC seria aqui
 	public static VeiculoDaoJBDC criarVeiculoDao() {
 		return new VeiculoDaoJBDC(DB.getConnection());
 	}
