@@ -7,79 +7,78 @@ import java.sql.SQLException;
 
 import db.DbException;
 import model.dao.VeiculoDao;
-import model.entities.VeiculoCadastrado;
+import model.entities.CaminhaoEntrega;
+import model.entities.Mensalista;
+import model.entities.Veiculo;
 import model.enums.TipoVeiculo;
 
 //Usado para Implementar o acesso de dados comJBDC para Veiculos
-public class VeiculoDaoJBDC implements VeiculoDao{
-	
+public class VeiculoDaoJBDC implements VeiculoDao {
+
 	private Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
-	
-	//Construtor pra pegar a conexão.
+
+	// Construtor pra pegar a conexão.
 	public VeiculoDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 
-	//Para inserir 
+	// Para inserir
 	@Override
-	public void insert(VeiculoCadastrado veiculo) {
+	public void insert(Veiculo veiculo) {
 		try {
 			st = conn.prepareStatement("INSERT INTO cadastrados (placa, categoria) VALUES (?, ?); ");
-			
+
 			st.setString(1, veiculo.getPlaca());
-			st.setString(2, veiculo.getModelo().name()); //Esse .name ta transformando o enum em String
-			
+			st.setString(2, veiculo.getModelo().name()); // Esse .name ta transformando o enum em String
+
 			st.executeUpdate();
-			
+
 			System.out.println("Veiculo cadastrado com sucesso!");
-			
-		}catch(SQLException e) {
+
+		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
 		}
-		
+
 	}
 
-	//USAR ISSO PRA VER SE EXISTE NA TABELA CADASTRADA
-	@Override
-	public VeiculoCadastrado searchCadastroByPlaca(String placa) {
+	// USAR ISSO PRA VER SE EXISTE NA TABELA CADASTRADA
+//	@Override Ajeitar Override dps
+	public Veiculo FindCadastroByPlaca(String placa) {
 		try {
-			System.out.println("Até aqui veio");
-			st = conn.prepareStatement("SELECT * FROM cadastrados WHERE placa = '?';");
-			
+			st = conn.prepareStatement("SELECT * FROM cadastrados WHERE placa = ?");
+
 			st.setString(1, placa);
 			rs = st.executeQuery();
-			
-			//Transformando o resultSet em objeto java
-			if(rs.next()) {
-				
-				System.out.println("ENTROU!");
+
+			// Transformando o resultSet em objeto java
+			if (rs.next()) {
+
 				String placaRetornada = rs.getString("placa");
 				String categoriaString = rs.getString("categoria");
-				//Transformando a String em Enum
+//				//Transformando a String em Enum
 				TipoVeiculo categoriaRetornada = TipoVeiculo.valueOf(categoriaString.toUpperCase());
-				
-				System.out.println("TESTE: placa) " + placaRetornada + " Categoria)" + categoriaRetornada);
-				
-//				VeiculoCadastrado cadastrado = new vEC
-				
 
-				
-			} else {
-				
-				System.out.println("Não entrou");
+				Veiculo cadastrado;
+
+				// De acordo com a categoria retornada ele devolve um objeto diferente
+				if (categoriaRetornada == TipoVeiculo.CAMINHAO) {
+					cadastrado = new CaminhaoEntrega(placaRetornada, categoriaRetornada);
+					return cadastrado;
+				} else if (categoriaRetornada == TipoVeiculo.CARRO || categoriaRetornada == TipoVeiculo.MOTO) {
+					cadastrado = new Mensalista(placaRetornada, categoriaRetornada);
+					return cadastrado;
+				} else {
+					return null;
+				}
+
 			}
-			
-			
-			
+
 		} catch (SQLException e) {
-			throw new DbException("Error: "  + e.getMessage());
+			throw new DbException("Error: " + e.getMessage());
 		}
-		
-		
-		
-		
+
 		return null;
 	}
 

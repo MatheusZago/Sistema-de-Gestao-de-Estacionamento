@@ -6,7 +6,7 @@ import model.dao.DaoFactory;
 import model.entities.CaminhaoEntrega;
 import model.entities.Mensalista;
 import model.entities.ServicoPublico;
-import model.entities.VeiculoCadastrado;
+import model.entities.Veiculo;
 import model.enums.TipoVeiculo;
 
 //Classe principal da aplicação
@@ -36,17 +36,17 @@ public class App {
 						//Passo 1, construir o carro que quer entrar
 						DaoFactory.criarVeiculoDao();
 						System.out.print("Digite a placa do veiculo: ");
-						String placa = sc.next();
-						System.out.print("Categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
-						String tipo = sc.next().toUpperCase();
-						TipoVeiculo modelo = TipoVeiculo.valueOf(tipo);
+						String placa = sc.next().toUpperCase();						
 						
 						//1.1 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO: 
-						ServicoPublico test = new ServicoPublico(placa, modelo);
-//						System.out.println(test);
-//						VeiculoDaoJBDC./
+						Mensalista veiculo = new Mensalista(placa);						
+						veiculo.entrar2(placa);
 						
-						test.entrar(test.getPlaca());
+//						System.out.println(test.getPlaca());
+//						System.out.println(test.entrar2(placa)); 
+						
+						
+						
 						
 //						if(modelo == TipoVeiculo.PUBLICO) {
 //							ServicoPublico publico = new ServicoPublico(placa, modelo);
@@ -74,17 +74,18 @@ public class App {
 						System.out.print("Categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
 						String tipo = sc.next().toUpperCase();
 						TipoVeiculo modelo = TipoVeiculo.valueOf(tipo);
+						
+						Veiculo cadastrado;
 
-						// Ta criando um objeto veiculo cadastrado
-						VeiculoCadastrado cadastrado;
-
+						//Ta criando veiculos com cash de acordo com o tipo deles
 						if (modelo == TipoVeiculo.CAMINHAO) {
 							cadastrado = new CaminhaoEntrega(placa, modelo);
+							((CaminhaoEntrega) cadastrado).cadastrar(cadastrado);
 						} else {
 							cadastrado = new Mensalista(placa, modelo);
+							((Mensalista) cadastrado).cadastrar(cadastrado);
 						}
 
-						cadastrado.cadastrar(cadastrado);
 
 						break;
 					}

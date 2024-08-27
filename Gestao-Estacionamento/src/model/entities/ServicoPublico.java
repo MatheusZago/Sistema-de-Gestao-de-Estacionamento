@@ -4,7 +4,7 @@ import model.dao.DaoFactory;
 import model.enums.TipoVeiculo;
 
 //Classe para implementar Veiculos de Serviço Publico, que não são cadastrados.
-public class ServicoPublico extends VeiculosNaoCadastrado{
+public class ServicoPublico extends Veiculo{
 
 	public ServicoPublico(String placa, TipoVeiculo modelo) {
 		super(placa, modelo);

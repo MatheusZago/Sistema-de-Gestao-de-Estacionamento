@@ -1,12 +1,44 @@
 package model.entities;
 
+import model.enums.TipoVeiculo;
+
 //Interface de Veiculos, que será implmenetada por tdos os veiculos
-public interface Veiculo {
+public abstract class Veiculo {
 
 
-//	//Não sei se vai no veiculo, rever dps
-	void entrar(String placa);
-	void sair();
+	private String placa;
+	private TipoVeiculo modelo;
+	
+	public Veiculo(String placa) {
+		this.placa = placa;
+	}
+	
+	public Veiculo(String placa, TipoVeiculo modelo) {
+		this.placa = placa;
+		this.modelo = modelo;
+	}
+
+	public String getPlaca() {
+		return placa;
+	}
+
+	public void setPlaca(String placa) {
+		this.placa = placa;
+	}
+
+	public TipoVeiculo getModelo() {
+		return modelo;
+	}
+
+	public void setModelo(TipoVeiculo modelo) {
+		this.modelo = modelo;
+	}
+	
+	
+	
+	
+	public abstract void entrar(String placa);
+	public abstract void sair();
 	
 
 }
