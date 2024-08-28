@@ -12,6 +12,7 @@ public interface ParkingSlotDao {
 	void createTable();
 	boolean doesTableExist(Connection conn, String tableName)  throws SQLException;
 	public List<ParkingSlot> findByOccupied(Boolean occupied);
+	public void updateSlot(boolean occupied, int number);
 	
 
 }

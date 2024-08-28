@@ -8,6 +8,7 @@ public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
 
 	public DeliveryTruck(String plate, VehicleCategory category) {
 		super(plate, category);
+		super.setSize(4);
 	}
 
 	//ESSA CLASSE ESTÁ COMENTADA PQ O VEICULO CADASTRADO TEM O METODO DEFAULT

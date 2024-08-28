@@ -42,9 +42,9 @@ public class ParkingSlot {
 	public String toString() {
 		String free;
 		if(occupied == true) {
-			free = "free";
-		} else {
 			free = "occupied";
+		} else {
+			free = "free";
 		}
 		
 		return "Slot: " + number + ", for " + type + ", " + free ;

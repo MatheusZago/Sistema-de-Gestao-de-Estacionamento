@@ -10,8 +10,9 @@ public class App2 {
 		//Para iniciar as vagas
 		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
 //		slot.createTable();
-		//Quero achar todos os que não estão ocupados
-		slot.findByOccupied(false);
+		slot.updateSlot(true, 40);
+		
+		slot.findByOccupied(true);
 		
 		
 		

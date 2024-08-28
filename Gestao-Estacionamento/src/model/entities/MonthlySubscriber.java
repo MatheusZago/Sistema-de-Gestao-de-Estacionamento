@@ -11,10 +11,21 @@ public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
 
 	public MonthlySubscriber(String plate) {
 		super(plate);
+		if(super.getCategory() == VehicleCategory.CAR) {
+			super.setSize(2);
+		} else if(super.getCategory() == VehicleCategory.MOTORCYCLE) {
+			super.setSize(1);
+		}
+		
 	}
 
 	public MonthlySubscriber(String plate, VehicleCategory category) {
 		super(plate, category);
+		if(super.getCategory() == VehicleCategory.CAR) {
+			super.setSize(2);
+		} else if(super.getCategory() == VehicleCategory.MOTORCYCLE) {
+			super.setSize(1);
+		}
 	}
 
 

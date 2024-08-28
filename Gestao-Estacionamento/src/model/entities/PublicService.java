@@ -7,6 +7,7 @@ public class PublicService extends Vehicle {
 
 	public PublicService(String plate, VehicleCategory category) {
 		super(plate, category);
+		super.setSize(0);
 	}
 
 //	@Override

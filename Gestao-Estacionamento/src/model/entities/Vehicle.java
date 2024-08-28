@@ -1,7 +1,11 @@
 package model.entities;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import model.dao.DaoFactory;
+import model.dao.impl.ParkedDaoJBDC;
+import model.dao.impl.ParkingSlotDaoJBDC;
 import model.enums.VehicleCategory;
 import model.services.BarrierService;
 
@@ -12,6 +16,7 @@ public abstract class Vehicle {
 
 	private String plate;
 	private VehicleCategory category;
+	private int size;
 
 	public Vehicle(String placa) {
 		this.plate = placa;
@@ -38,14 +43,37 @@ public abstract class Vehicle {
 		this.category = category;
 	}
 
-	public void enter(Vehicle vehicle) {
+	
+	
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public void enter(Vehicle vehicle, LocalDateTime time) {
 	
 		//Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
 		System.out.println("Enter by the barriers: ");
-
 		BarrierService.validateEntryBarriers(vehicle);
-
+		
+		
+		//Passo 4) Criar a adentrada do viculo 
+		System.out.println("Chosse a slot to park: ");
+		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
+		slot.findByOccupied(false);
+		int choice = sc.nextInt();
+		slot.updateSlot(true, choice);
+		
+		//AQUI VC CRIA FAZ UM INSERT NO BANCO DE DADOS PARKED
+		ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
+		parked.insert(vehicle, time, choice);
+		
 	}
+	
+	
 
 	public void exit(Vehicle veiculo) {
 		

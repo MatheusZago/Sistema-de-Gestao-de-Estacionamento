@@ -11,53 +11,42 @@ import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
 public class ServicoVerificarCadastro {
-	 
+
 	static Scanner sc = new Scanner(System.in);
-	
-	public static Vehicle verificarCadastro(String placa) {
-		Vehicle veiculo = DaoFactory.createVehicleDao().FindRegisteredByPlate(placa);
 
-		if (veiculo != null) {
-			System.out.println(
-					"Veiculo de placa " + veiculo.getPlate() + " é um(a) " + veiculo.getCategory() + " cadastrado(a)");
-			
-			if(veiculo.getCategory() == VehicleCategory.TRUCK) {
-				veiculo = new DeliveryTruck(veiculo.getPlate(), veiculo.getCategory());
+	public static Vehicle verifyRegister(String plate) {
+		Vehicle vehicle = DaoFactory.createVehicleDao().FindRegisteredByPlate(plate);
+
+		if (vehicle != null) {
+			System.out.println("Vehicle with plate " + vehicle.getPlate() + " is a " + vehicle.getCategory()
+					+ " and is registered.");
+
+			if (vehicle.getCategory() == VehicleCategory.TRUCK) {
+				vehicle = new DeliveryTruck(vehicle.getPlate(), vehicle.getCategory());
 			} else {
-				veiculo = new MonthlySubscriber(veiculo.getPlate(), veiculo.getCategory());
+				vehicle = new MonthlySubscriber(vehicle.getPlate(), vehicle.getCategory());
 			}
 
-			return veiculo;
-			
-		} 
-//		else { //NÃO PRECISA DE ELSE PQ O RETURNO IRIA FINALIZAR ESSA FUNÇÃO
-			// Se o if falhar entao o veiculo não é cadastrado, então ele será instanciado
-			// aqui, pedindo seu tipo de veiculo
-			// Não é necessário pedir o tipo de veiculo se já estiver cadastrado, pois ele
-			// vai pegar o tipo do BD por si próprio.
-			System.out.println("Veiculo não cadastrado.");
-			System.out.print("Informe a categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
-			String tipo = sc.next().toUpperCase();
-			VehicleCategory modelo = VehicleCategory.valueOf(tipo);
+			return vehicle;
 
-//			Veiculo veiculo;
+		}
 
-			if (modelo == VehicleCategory.PUBLIC) {
-				veiculo = new PublicService(placa, modelo);
-			} else {
-				veiculo = new IndividualVehicle(placa, modelo);
-			}
-
-			System.out.println("Seu veiculo de placa " + veiculo.getPlate() + " é um(a) " + veiculo.getCategory());
-			return veiculo;
 		
-		//Se tudo falhar retorna nulo
-//		return null;
+		//TODO adicionar um erro caso tente entrar com caminhão não registrado.
+		System.out.println("Vehicle not registered.");
+		System.out.print("Inform the vehicle category (CAR, MOTORCYCLE, PUBLIC): ");
+		String type = sc.next().toUpperCase();
+		VehicleCategory category = VehicleCategory.valueOf(type);
 
-//		System.out.println("Entrar pelas catracas: ");
-//
-//		ServicoCancela.validacaoCatracasEntrada(veiculo);
+		if (category == VehicleCategory.PUBLIC) {
+			vehicle = new PublicService(plate, category);
+		} else {
+			vehicle = new IndividualVehicle(plate, category);
+		}
+
+		System.out.println("Vehicle with plate " + vehicle.getPlate() + " is a " + vehicle.getCategory());
+		return vehicle;
+
 	}
-	
 
 }

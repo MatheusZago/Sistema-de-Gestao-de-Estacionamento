@@ -91,6 +91,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
 		
 		try {
+			
 			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ?");
 			
 			st.setBoolean(1, occupied);
@@ -117,6 +118,23 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		return parkingSlots;
 		
 	}
+	
+	@Override
+	public void updateSlot(boolean occupied, int number) {
+	    try {
+	        st = conn.prepareStatement("UPDATE parking_spaces SET occupied = ? WHERE number = ?");
+	        st.setBoolean(1, occupied);
+	        st.setInt(2, number);
+
+	        st.executeUpdate();
+	        System.out.println("Update worked");
+
+	    } catch (SQLException e) {
+	        throw new DbException("Error: " + e.getMessage());
+	    }
+	}
+	
+	
 	
 	
 
