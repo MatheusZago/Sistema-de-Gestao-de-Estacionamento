@@ -11,7 +11,7 @@ import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
 public class ServicoVerificarCadastro {
-	
+	 
 	static Scanner sc = new Scanner(System.in);
 	
 	public static Vehicle verificarCadastro(String placa) {
