@@ -2,7 +2,6 @@ package model.entities;
 
 import java.util.Scanner;
 
-import model.dao.DaoFactory;
 import model.enums.TipoVeiculo;
 import model.services.ServicoCancela;
 
@@ -39,41 +38,20 @@ public abstract class Veiculo {
 		this.modelo = modelo;
 	}
 
-	public void entrar(String placa) {
-
-		Veiculo veiculo = DaoFactory.criarVeiculoDao().FindCadastroByPlaca(placa);
-
-		if (veiculo != null) {
-			System.out.println(
-					"Veiculo de placa " + veiculo.getPlaca() + " é um(a) " + veiculo.getModelo() + " cadastrado(a)");
-
-		} else {
-			// Se o if falhar entao o veiculo não é cadastrado, então ele será instanciado
-			// aqui, pedindo seu tipo de veiculo
-			// Não é necessário pedir o tipo de veiculo se já estiver cadastrado, pois ele
-			// vai pegar o tipo do BD por si próprio.
-			System.out.println("Veiculo não cadastrado.");
-			System.out.print("Informe a categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
-			String tipo = sc.next().toUpperCase();
-			TipoVeiculo modelo = TipoVeiculo.valueOf(tipo);
-
-//			Veiculo veiculo;
-
-			if (modelo == TipoVeiculo.PUBLICO) {
-				veiculo = new ServicoPublico(placa, modelo);
-			} else {
-				veiculo = new Avulso(placa, modelo);
-			}
-
-			System.out.println("Seu veiculo de placa " + veiculo.getPlaca() + " é um(a) " + veiculo.getModelo());
-		}
-
+	public void entrar(Veiculo veiculo) {
+	
+		//Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
 		System.out.println("Entrar pelas catracas: ");
 
 		ServicoCancela.validacaoCatracasEntrada(veiculo);
 
 	}
 
-	public abstract void sair();
+	public void sair(Veiculo veiculo) {
+		
+//		System.out.println("Sair pelas catracas: ");
+//		
+//		ServicoCancela.validacaoCatracasSaida(veiculo);
+	}
 
 }

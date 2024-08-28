@@ -61,7 +61,7 @@ public class Mensalista extends Veiculo implements VeiculoCadastrado{
 	
 	
 	@Override
-	public void sair() {
+	public void sair(Veiculo veiculo) {
 		// TODO Auto-generated method stub
 		
 	}

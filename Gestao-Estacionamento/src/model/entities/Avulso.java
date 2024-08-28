@@ -15,16 +15,16 @@ public class Avulso extends Veiculo{
 
 
 
-	@Override
-	public void entrar(String placa) {
-		
-		
-	}
-
-	@Override
-	public void sair() {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public void entrar(Veiculo veiculo) {
+//		
+//		
+//	}
+//
+//	@Override
+//	public void sair(Veiculo veiculo) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 }

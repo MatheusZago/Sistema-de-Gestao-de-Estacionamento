@@ -24,10 +24,10 @@ public class CaminhaoEntrega extends Veiculo implements VeiculoCadastrado{
 //		
 //	}
 
-	@Override
-	public void sair() {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public void sair(Veiculo veiculo) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 }

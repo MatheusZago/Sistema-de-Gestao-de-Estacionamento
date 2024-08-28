@@ -1,6 +1,5 @@
 package model.entities;
 
-import model.dao.DaoFactory;
 import model.enums.TipoVeiculo;
 
 //Classe para implementar Veiculos de Serviço Publico, que não são cadastrados.
@@ -10,19 +9,19 @@ public class ServicoPublico extends Veiculo{
 		super(placa, modelo);
 	}
 
-	@Override
-	public void entrar(String placa) {
-		DaoFactory.criarVeiculoDao();
-		
-		
-		
-	}
-
-	@Override
-	public void sair() {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public void entrar(Veiculo veiculo) {
+//		DaoFactory.criarVeiculoDao();
+//		
+//		
+//		
+//	}
+//
+//	@Override
+//	public void sair(Veiculo veiculo) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 	@Override
 	public String toString() {

@@ -68,12 +68,13 @@ public class ServicoCancela {
 						
 		} while (opcaoValida == false);
 		
-		System.out.println("Passou pela cancela " + escolha);
 		
 		
 	}
 	
 public static void validacaoCatracasSaida(Veiculo veiculo) {
+	
+	System.out.println("Chamou a função de sair");
 		
 		String modelo = veiculo.getModelo().name(); //Transformando TipoModelo em String 
 		String opcoes;
@@ -90,7 +91,7 @@ public static void validacaoCatracasSaida(Veiculo veiculo) {
 			break;
 		} case "MOTO": {
 			opcoes = "10";
-			arrayOpcoes = new String[] {"5"};
+			arrayOpcoes = new String[] {"10"};
 			break;
 		} 
 		default:
@@ -110,7 +111,7 @@ public static void validacaoCatracasSaida(Veiculo veiculo) {
 				if(opcao.equals(String.valueOf(escolha))) {
 					opcaoValida = true;
 					break;
-				} else if(escolha > 5 || escolha < 1) {
+				} else if(escolha > 10 || escolha < 6) {
 					System.out.println("Escolha entre uma cancela existente.");
 				} else if(opcaoValida == false ) {
 					System.out.println("Escolha entre uma cancela própria para " + veiculo.getModelo());
