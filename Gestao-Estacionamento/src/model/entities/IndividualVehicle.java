@@ -1,13 +1,13 @@
 package model.entities;
 
-import model.enums.TipoVeiculo;
+import model.enums.VehicleCategory;
 
 //Classe para representar os veiculos avulsos, não cadastrados.
-public class Avulso extends Veiculo{
+public class IndividualVehicle extends Vehicle{
 	
 	//Ppegando construtor da classe abstrata
-	public Avulso(String placa, TipoVeiculo modelo) {
-		super(placa, modelo);
+	public IndividualVehicle(String plate, VehicleCategory category) {
+		super(plate, category);
 	}
 
 

@@ -1,13 +1,13 @@
 package model.entities;
 
-import model.enums.TipoVeiculo;
+import model.enums.VehicleCategory;
 
 //Classe para representar o Caminhão que entrega, que implementa veiculos e herda de veiculos cadastrados
-public class CaminhaoEntrega extends Veiculo implements VeiculoCadastrado{
+public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
 
 
-	public CaminhaoEntrega(String placa, TipoVeiculo modelo) {
-		super(placa, modelo);
+	public DeliveryTruck(String plate, VehicleCategory category) {
+		super(plate, category);
 	}
 
 	//ESSA CLASSE ESTÁ COMENTADA PQ O VEICULO CADASTRADO TEM O METODO DEFAULT

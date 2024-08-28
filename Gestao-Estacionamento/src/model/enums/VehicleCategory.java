@@ -1,12 +1,12 @@
 package model.enums;
 
 //Classe de Enum para tipos de Veiculos
-public enum TipoVeiculo {
+public enum VehicleCategory {
 	
-	CARRO,
-	MOTO,
-	CAMINHAO,
-	PUBLICO
+	CAR,
+	MOTORCYCLE,
+	TRUCK,
+	PUBLIC
 	
 
 }

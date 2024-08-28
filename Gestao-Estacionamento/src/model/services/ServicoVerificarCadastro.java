@@ -3,28 +3,28 @@ package model.services;
 import java.util.Scanner;
 
 import model.dao.DaoFactory;
-import model.entities.Avulso;
-import model.entities.CaminhaoEntrega;
-import model.entities.Mensalista;
-import model.entities.ServicoPublico;
-import model.entities.Veiculo;
-import model.enums.TipoVeiculo;
+import model.entities.IndividualVehicle;
+import model.entities.DeliveryTruck;
+import model.entities.MonthlySubscriber;
+import model.entities.PublicService;
+import model.entities.Vehicle;
+import model.enums.VehicleCategory;
 
 public class ServicoVerificarCadastro {
 	
 	static Scanner sc = new Scanner(System.in);
 	
-	public static Veiculo verificarCadastro(String placa) {
-		Veiculo veiculo = DaoFactory.criarVeiculoDao().FindCadastroByPlaca(placa);
+	public static Vehicle verificarCadastro(String placa) {
+		Vehicle veiculo = DaoFactory.createVehicleDao().FindRegisteredByPlate(placa);
 
 		if (veiculo != null) {
 			System.out.println(
-					"Veiculo de placa " + veiculo.getPlaca() + " é um(a) " + veiculo.getModelo() + " cadastrado(a)");
+					"Veiculo de placa " + veiculo.getPlate() + " é um(a) " + veiculo.getCategory() + " cadastrado(a)");
 			
-			if(veiculo.getModelo() == TipoVeiculo.CAMINHAO) {
-				veiculo = new CaminhaoEntrega(veiculo.getPlaca(), veiculo.getModelo());
+			if(veiculo.getCategory() == VehicleCategory.TRUCK) {
+				veiculo = new DeliveryTruck(veiculo.getPlate(), veiculo.getCategory());
 			} else {
-				veiculo = new Mensalista(veiculo.getPlaca(), veiculo.getModelo());
+				veiculo = new MonthlySubscriber(veiculo.getPlate(), veiculo.getCategory());
 			}
 
 			return veiculo;
@@ -38,17 +38,17 @@ public class ServicoVerificarCadastro {
 			System.out.println("Veiculo não cadastrado.");
 			System.out.print("Informe a categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
 			String tipo = sc.next().toUpperCase();
-			TipoVeiculo modelo = TipoVeiculo.valueOf(tipo);
+			VehicleCategory modelo = VehicleCategory.valueOf(tipo);
 
 //			Veiculo veiculo;
 
-			if (modelo == TipoVeiculo.PUBLICO) {
-				veiculo = new ServicoPublico(placa, modelo);
+			if (modelo == VehicleCategory.PUBLIC) {
+				veiculo = new PublicService(placa, modelo);
 			} else {
-				veiculo = new Avulso(placa, modelo);
+				veiculo = new IndividualVehicle(placa, modelo);
 			}
 
-			System.out.println("Seu veiculo de placa " + veiculo.getPlaca() + " é um(a) " + veiculo.getModelo());
+			System.out.println("Seu veiculo de placa " + veiculo.getPlate() + " é um(a) " + veiculo.getCategory());
 			return veiculo;
 		
 		//Se tudo falhar retorna nulo

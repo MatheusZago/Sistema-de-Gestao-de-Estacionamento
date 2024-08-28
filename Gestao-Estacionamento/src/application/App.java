@@ -3,10 +3,10 @@ package application;
 import java.util.Scanner;
 
 import model.dao.DaoFactory;
-import model.entities.CaminhaoEntrega;
-import model.entities.Mensalista;
-import model.entities.Veiculo;
-import model.enums.TipoVeiculo;
+import model.entities.DeliveryTruck;
+import model.entities.MonthlySubscriber;
+import model.entities.Vehicle;
+import model.enums.VehicleCategory;
 import model.services.ServicoVerificarCadastro;
 
 //Classe principal da aplicação
@@ -15,34 +15,34 @@ public class App {
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
-		boolean teste = true;
+		boolean test = true;
 
 		try {
 
 			//Foi usado do while para que o programa execute pelo menos uma vez.
 			do {
 				{
-					System.out.println("=====ESCOLHA OPÇÃO=====");
-					System.out.println("1) Registrar entrada");
-					System.out.println("2) Registrar saida");
-					System.out.println("3) Cadastrar veiculo");
-					System.out.println("4) Sair");
+					System.out.println("=====CHOOSE AN OPTION=====");
+					System.out.println("1) Register entrance");
+					System.out.println("2) Register exit");
+					System.out.println("3) Register Vehicle");
+					System.out.println("4) Exit");
 
-					int escolha = sc.nextInt();
+					int choice = sc.nextInt();
 
-					switch (escolha) {
+					switch (choice) {
 					case 1: {
 						//Passo 1, construir o carro que quer entrar (FEITO)
 						System.out.println();
-						System.out.println("Vamos registrar sua entrada!");
-						System.out.print("Digite a placa do veiculo: ");
-						String placa = sc.next().toUpperCase();						
+						System.out.println("Let's register your entrance!");
+						System.out.print("Enter the plate number: ");
+						String plate = sc.next().toUpperCase();						
 						
 						//2 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO: (FEITO)
-						Veiculo veiculo = ServicoVerificarCadastro.verificarCadastro(placa);
+						Vehicle vehicle = ServicoVerificarCadastro.verificarCadastro(plate);
 											
 						//Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
-						veiculo.entrar(veiculo);
+						vehicle.enter(vehicle);
 						
 
 						
@@ -54,7 +54,7 @@ public class App {
 					}
 					case 2: {
 						System.out.println();
-						System.out.println("Vamos registrar sua saida!");
+						System.out.println("Let's register your exit!");
 //						System.out.println("Digite a placa do veiculo: ");
 //						String placa = sc.next().toUpperCase();
 //						System.out.println();
@@ -72,33 +72,37 @@ public class App {
 					}
 					case 3: {
 						// AQUI TEM QUE CHMAR A FUNÇÃO QUE CADASTRA
-						DaoFactory.criarVeiculoDao();
-						System.out.print("Digite a placa do veiculo: ");
-						String placa = sc.next();
-						System.out.print("Categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
-						String tipo = sc.next().toUpperCase();
-						TipoVeiculo modelo = TipoVeiculo.valueOf(tipo);
+						DaoFactory.createVehicleDao();
+						System.out.print("Enter vehicle plate: ");
+						String plate = sc.next();
+						//TODO, dar um erro para evitar placas repetidas sem quebrar o programa.
+						System.out.print("Category (CAR, MOTORCYCLE, TRUCK): ");
+						String type = sc.next().toUpperCase();
+						VehicleCategory model = VehicleCategory.valueOf(type);
 						
-						Veiculo cadastrado;
+						Vehicle registered;
 
 						//Ta criando veiculos com cash de acordo com o tipo deles
-						if (modelo == TipoVeiculo.CAMINHAO) {
-							cadastrado = new CaminhaoEntrega(placa, modelo);
-							((CaminhaoEntrega) cadastrado).cadastrar(cadastrado); //Ta especificando qual é.
+						if (model == VehicleCategory.TRUCK) {
+							registered = new DeliveryTruck(plate, model);
+							((DeliveryTruck) registered).register(registered); //Ta especificando qual é.
+						} else if(model == VehicleCategory.CAR || model == VehicleCategory.MOTORCYCLE) {
+							registered = new MonthlySubscriber(plate, model);
+							((MonthlySubscriber) registered).register(registered); //Ta especificando qual é
 						} else {
-							cadastrado = new Mensalista(placa, modelo);
-							((Mensalista) cadastrado).cadastrar(cadastrado); //Ta especificando qual é
+							//TODO ajeitar para usar um erro
+							System.out.println("Invalid vehicle, try again.");
 						}
 
 
 						break;
 					}
 					case 4: {
-						System.out.println("Obrigado por usar o sistema!");
-						teste = false;
+						System.out.println("Thank you for using the system!");
+						test = false;
 					}
 					default:
-						throw new IllegalArgumentException("Unexpected value: " + escolha);
+						throw new IllegalArgumentException("Unexpected value: " + choice);
 					}
 
 					// Apenas para pular linha
@@ -107,7 +111,7 @@ public class App {
 				}
 			}
 
-			while (teste);
+			while (test);
 
 		} catch (RuntimeException e) {
 			e.getStackTrace();

@@ -2,19 +2,19 @@ package model.entities;
 
 import java.util.Scanner;
 
-import model.enums.TipoVeiculo;
+import model.enums.VehicleCategory;
 
 //Classe para representar os mensalistas, que implmeneta veiculos e herda de Veiculos Cadastrados
-public class Mensalista extends Veiculo implements VeiculoCadastrado{
+public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
 	
 	Scanner sc = new Scanner(System.in);
 
-	public Mensalista(String placa) {
-		super(placa);
+	public MonthlySubscriber(String plate) {
+		super(plate);
 	}
 
-	public Mensalista(String placa, TipoVeiculo modelo) {
-		super(placa, modelo);
+	public MonthlySubscriber(String plate, VehicleCategory category) {
+		super(plate, category);
 	}
 
 
@@ -61,7 +61,7 @@ public class Mensalista extends Veiculo implements VeiculoCadastrado{
 	
 	
 	@Override
-	public void sair(Veiculo veiculo) {
+	public void exit(Vehicle veiculo) {
 		// TODO Auto-generated method stub
 		
 	}
