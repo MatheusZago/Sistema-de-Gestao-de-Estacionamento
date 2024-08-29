@@ -8,11 +8,11 @@ public class App2 {
 	public static void main(String[] args) {
 		
 		//Para iniciar as vagas
-		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
+//		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
 //		slot.createTable();
-		slot.updateSlot(true, 40);
-		
-		slot.findByOccupied(true);
+//		slot.occupieSlot(true, 40);
+//		
+//		slot.findByOccupied(true);
 		
 		
 		

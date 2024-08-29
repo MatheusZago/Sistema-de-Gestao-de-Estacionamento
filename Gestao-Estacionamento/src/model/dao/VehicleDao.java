@@ -7,8 +7,7 @@ public interface VehicleDao {
 	
 	void insert(Vehicle vehicle);
 	Vehicle FindRegisteredByPlate(String plate);
-//	void update();
-//	void deleteByPlaca();
-	//DPS BOAAR OS OUTROS
+//	Vehicle instantiateVehicleBy(String plate);
+
 	
 }

@@ -71,11 +71,11 @@ public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
 	
 	
 	
-	@Override
-	public void exit(Vehicle veiculo) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public void exit(Vehicle veiculo,) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 
 	//ESSA CLASSE ESTÁ COMENTADA PQ O VEICULO CADASTRADO TEM O METODO DEFAULT

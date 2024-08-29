@@ -1,3 +1,5 @@
+USE sistemagaragem;
+
 CREATE TABLE parking_spaces (
     id INT AUTO_INCREMENT PRIMARY KEY,
     number INT NOT NULL,

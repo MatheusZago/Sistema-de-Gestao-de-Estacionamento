@@ -81,5 +81,46 @@ public class VehicleDaoJBDC implements VehicleDao {
 
 		return null;
 	}
+	
+//	@Override
+//	public Vehicle instantiateParkedVehicleByPlate(String plate) {
+//		ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
+//		Vehicle vehicle = parked.findByPlate(plate); //recebendo o veiculo achado		
+//		
+//		
+//		//Se ele for um veiculo registrado
+//		if(VerifyRegisterService.isRegistered(plate) == true) {
+//			VerifyRegisterService.verifyRegister(vehicle.getPlate());
+//
+//			if(vehicle.getCategory() == VehicleCategory.TRUCK) {
+//				//INSTANCIAR UM CAMINHÃO DE ETNREGA
+//				
+//				
+//			} else {
+//				//Instanciar um mensalista
+//			}
+//		
+//		} else {//Se não for registrado
+//			if(vehicle.getCategory() == VehicleCategory.PUBLIC) {
+//				//INSTANCIAR UM SERVIÇO PUBLICO
+//			} else {
+//				//Instanciar um Avulso
+//			}
+//		}
+//		
+//		
+//
+//		
+//		
+//		
+//
+////		System.out.println(vehicle);
+//		
+//		
+//		return null;
+//		
+//		
+//		
+//	}
 
 }

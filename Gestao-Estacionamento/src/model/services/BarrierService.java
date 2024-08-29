@@ -72,9 +72,9 @@ public class BarrierService {
 		
 	}
 	
-public static void validacaoCatracasSaida(Vehicle vehicle) {
+public static void validateExitBarriers(Vehicle vehicle) {
 	
-	System.out.println("Called function to exit.r");
+	System.out.println("Called function to exit");
 		
 		String category = vehicle.getCategory().name(); //Transformando TipoModelo em String 
 		String options;

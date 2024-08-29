@@ -120,11 +120,59 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 	}
 	
 	@Override
-	public void updateSlot(boolean occupied, int number) {
+	public List<ParkingSlot> findByOccupiedGeneral(Boolean occupied) {
+		
+		List<ParkingSlot> parkingSlots = new ArrayList<>();
+		
+		try {
+			
+			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ? AND type = 'GENERAL';");
+			
+			st.setBoolean(1, occupied);
+			rs = st.executeQuery();
+			while(rs.next()) {
+				int id = rs.getInt("id");
+				int number = rs.getInt("number");
+				String type = rs.getString("type");
+				SlotType slotType = SlotType.valueOf(type);
+				boolean isOccupied = rs.getBoolean("occupied");
+				
+				
+				ParkingSlot slot = new ParkingSlot(id, number, slotType, isOccupied);
+				parkingSlots.add(slot);
+			}
+			
+			
+			
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
+		
+		parkingSlots.forEach(System.out::println);
+		return parkingSlots;
+		
+	}
+	
+	@Override
+	public void occupieSlot(int number) {
 	    try {
-	        st = conn.prepareStatement("UPDATE parking_spaces SET occupied = ? WHERE number = ?");
-	        st.setBoolean(1, occupied);
-	        st.setInt(2, number);
+	        st = conn.prepareStatement("UPDATE parking_spaces SET occupied = TRUE WHERE number = ?;");
+//	        st.setBoolean(1, occupied);
+	        st.setInt(1, number);
+
+	        st.executeUpdate();
+	        System.out.println("Update worked");
+
+	    } catch (SQLException e) {
+	        throw new DbException("Error: " + e.getMessage());
+	    }
+	}
+	
+	public void freeSlot(int slot) {
+	    try {
+	        st = conn.prepareStatement("UPDATE parking_spaces SET occupied = FALSE WHERE number = ?;");
+//	        st.setBoolean(1, occupied);
+	        st.setInt(1, slot);
 
 	        st.executeUpdate();
 	        System.out.println("Update worked");

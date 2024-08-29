@@ -18,6 +18,10 @@ public abstract class Vehicle {
 	private VehicleCategory category;
 	private int size;
 
+	public Vehicle() {
+
+	}
+
 	public Vehicle(String placa) {
 		this.plate = placa;
 	}
@@ -43,8 +47,6 @@ public abstract class Vehicle {
 		this.category = category;
 	}
 
-	
-	
 	public int getSize() {
 		return size;
 	}
@@ -54,32 +56,67 @@ public abstract class Vehicle {
 	}
 
 	public void enter(Vehicle vehicle, LocalDateTime time) {
-	
-		//Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
+
+		// Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
 		System.out.println("Enter by the barriers: ");
 		BarrierService.validateEntryBarriers(vehicle);
-		
-		
-		//Passo 4) Criar a adentrada do viculo 
-		System.out.println("Chosse a slot to park: ");
-		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
-		slot.findByOccupied(false);
-		int choice = sc.nextInt();
-		slot.updateSlot(true, choice);
-		
-		//AQUI VC CRIA FAZ UM INSERT NO BANCO DE DADOS PARKED
-		ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
-		parked.insert(vehicle, time, choice);
-		
-	}
-	
-	
 
-	public void exit(Vehicle veiculo) {
+		if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
+			// Passo 4.1) Veiculos publicos não ocupam vagas.
+			System.out.println("Entered on a special parking slot, not counted on the 500.");
+		} else {
+			// Passo 4.2) Veiculo entrou, atualizando X vagas para ocupado e criando na
+			// tabela de parking
+			System.out.println("Available slots: ");
+			ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
+
+			if (vehicle instanceof MonthlySubscriber) {
+
+				slot.findByOccupied(false);
+			} else {
+				slot.findByOccupiedGeneral(false);
+			}
+
+			int choice = 0;
+//			slot.updateSlot(true, choice);
+
+			// Tamanho precisa de vagas para o tamanho dele.
+			for (int i = 1; i <= vehicle.size; i++) {
+				System.out.println("Escolha a vaga " + i);
+				choice = sc.nextInt();
+				// UPDATE NO PARKING SLOT
+				slot.occupieSlot(choice);
+				// AQUI VC CRIA FAZ UM INSERT NO BANCO DE DADOS PARKED
+				ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
+				parked.insert(vehicle, time, choice);
+
+			}
+			System.out.println("Insert in Parked worked!");
+
+		}
+
+	}
+
+	public void exit(Vehicle vehicle, Parked parkedVehicle, LocalDateTime time) {
+		System.out.println("Chamou a logica de saida");
+		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
+		ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
 		
-//		System.out.println("Sair pelas catracas: ");
-//		
-//		ServicoCancela.validacaoCatracasSaida(veiculo);
+		System.out.println("Leaving by the barrier: ");
+		BarrierService.validateExitBarriers(vehicle);
+		
+		if(vehicle.getCategory() != VehicleCategory.PUBLIC) {
+			slot.freeSlot(parkedVehicle.getNumberSlot());
+			parked.remove(vehicle);
+			
+		}
+		
+
+	}
+
+	@Override
+	public String toString() {
+		return "Plate: " + plate + ", Category: " + category + ", size: " + size;
 	}
 
 }
