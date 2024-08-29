@@ -13,7 +13,7 @@ public interface ParkingSlotDao {
 	boolean doesTableExist(Connection conn, String tableName)  throws SQLException;
 	public List<ParkingSlot> findByOccupied(Boolean occupied);
 	public List<ParkingSlot> findByOccupiedGeneral(Boolean occupied);
-	public void occupieSlot(int number);
+	public void occupieSlot(int number, String plate);
 	
 
 }

@@ -32,7 +32,8 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 				String createTableSQL = "CREATE TABLE parking_spaces (" + "    id INT AUTO_INCREMENT PRIMARY KEY, "
 						+ "    number INT NOT NULL, " + "    type ENUM('GENERAL', 'MONTHLY_SUBSCRIBER') NOT NULL, "
-						+ "    occupied BOOLEAN NOT NULL DEFAULT FALSE, " + "    UNIQUE (number)" + ");";
+						+ "    occupied BOOLEAN NOT NULL DEFAULT FALSE, " + "    occupiedBy VARCHAR(10) NULL,  "
+						+ "    UNIQUE (number)" + ");";
 
 				try (PreparedStatement st = conn.prepareStatement(createTableSQL)) {
 					st.executeUpdate();
@@ -42,12 +43,11 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 					System.out.println("Error on creating table.");
 				}
 
-			} 
-			else {
+			} else {
 //				st = conn.prepareStatement(" DROP TABLE parking_spaces;");
 //				st.executeUpdate();
 				System.out.println("Table already exists, drop it to create a new one.");
-				
+
 			}
 
 			st = conn.prepareStatement("INSERT INTO parking_spaces (number, type) VALUES (?, ?)");
@@ -59,10 +59,10 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 					st.setString(2, "GENERAL");
 					st.addBatch();
 				} else {
-					
+
 					st.setInt(1, i);
 					st.setString(2, "MONTHLY_SUBSCRIBER");
-					st.addBatch(); //Vai adicionar numa fila de comando
+					st.addBatch(); // Vai adicionar numa fila de comando
 				}
 
 			}
@@ -78,7 +78,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 	}
 
 	// Função para verificar se a tabela existe
-	public  boolean doesTableExist(Connection conn, String tableName) throws SQLException {
+	public boolean doesTableExist(Connection conn, String tableName) throws SQLException {
 		DatabaseMetaData metaData = conn.getMetaData();
 		try (var rs = metaData.getTables(null, null, tableName, null)) {
 			return rs.next(); // Se o ResultSet tiver um próximo elemento, a tabela existe
@@ -87,103 +87,94 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	@Override
 	public List<ParkingSlot> findByOccupied(Boolean occupied) {
-		
+
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
-		
+
 		try {
-			
+
 			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ?");
-			
+
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				int id = rs.getInt("id");
 				int number = rs.getInt("number");
 				String type = rs.getString("type");
 				SlotType slotType = SlotType.valueOf(type);
 				boolean isOccupied = rs.getBoolean("occupied");
-				
-				
+
 				ParkingSlot slot = new ParkingSlot(id, number, slotType, isOccupied);
 				parkingSlots.add(slot);
 			}
-			
-			
-			
+
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
 		}
-		
+
 		parkingSlots.forEach(System.out::println);
 		return parkingSlots;
-		
+
 	}
-	
+
 	@Override
 	public List<ParkingSlot> findByOccupiedGeneral(Boolean occupied) {
-		
+
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
-		
+
 		try {
-			
-			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ? AND type = 'GENERAL';");
-			
+
+			st = conn.prepareStatement(
+					"SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ? AND type = 'GENERAL';");
+
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				int id = rs.getInt("id");
 				int number = rs.getInt("number");
 				String type = rs.getString("type");
 				SlotType slotType = SlotType.valueOf(type);
 				boolean isOccupied = rs.getBoolean("occupied");
-				
-				
+
 				ParkingSlot slot = new ParkingSlot(id, number, slotType, isOccupied);
 				parkingSlots.add(slot);
 			}
-			
-			
-			
+
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
 		}
-		
+
 		parkingSlots.forEach(System.out::println);
 		return parkingSlots;
-		
+
 	}
-	
+
 	@Override
-	public void occupieSlot(int number) {
-	    try {
-	        st = conn.prepareStatement("UPDATE parking_spaces SET occupied = TRUE WHERE number = ?;");
-//	        st.setBoolean(1, occupied);
-	        st.setInt(1, number);
+	public void occupieSlot(int number, String plate) {
+		try {
+			st = conn.prepareStatement("UPDATE parking_spaces SET occupied = TRUE, occupiedBy = ?  WHERE number = ?;");
+			st.setString(1, plate);
+			st.setInt(2, number);
 
-	        st.executeUpdate();
-	        System.out.println("Update worked");
+			st.executeUpdate();
+			System.out.println("Update worked");
 
-	    } catch (SQLException e) {
-	        throw new DbException("Error: " + e.getMessage());
-	    }
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
 	}
-	
-	public void freeSlot(int slot) {
-	    try {
-	        st = conn.prepareStatement("UPDATE parking_spaces SET occupied = FALSE WHERE number = ?;");
+
+	public void freeSlot(String plate) {
+		try {
+			st = conn.prepareStatement("UPDATE parking_spaces SET occupied = FALSE, occupiedBy = null WHERE occupiedBy = ?;");
 //	        st.setBoolean(1, occupied);
-	        st.setInt(1, slot);
+			st.setString(1, plate);
 
-	        st.executeUpdate();
-	        System.out.println("Update worked");
+			st.executeUpdate();
+			System.out.println("Update worked");
 
-	    } catch (SQLException e) {
-	        throw new DbException("Error: " + e.getMessage());
-	    }
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
 	}
-	
-	
-	
-	
 
 }

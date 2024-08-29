@@ -85,7 +85,7 @@ public abstract class Vehicle {
 				System.out.println("Escolha a vaga " + i);
 				choice = sc.nextInt();
 				// UPDATE NO PARKING SLOT
-				slot.occupieSlot(choice);
+				slot.occupieSlot(choice, vehicle.getPlate());
 				// AQUI VC CRIA FAZ UM INSERT NO BANCO DE DADOS PARKED
 				ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
 				parked.insert(vehicle, time, choice);
@@ -106,7 +106,7 @@ public abstract class Vehicle {
 		BarrierService.validateExitBarriers(vehicle);
 		
 		if(vehicle.getCategory() != VehicleCategory.PUBLIC) {
-			slot.freeSlot(parkedVehicle.getNumberSlot());
+			slot.freeSlot(parkedVehicle.getPlate());
 			parked.remove(vehicle);
 			
 		}
