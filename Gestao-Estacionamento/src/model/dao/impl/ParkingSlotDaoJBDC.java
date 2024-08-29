@@ -28,9 +28,9 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		try {
 
 			// Verificar se a tabela não existe
-			if (!doesTableExist(conn, "parking_spaces")) {
+			if (!doesTableExist(conn, "parking_slots")) {
 
-				String createTableSQL = "CREATE TABLE parking_spaces (" + "    id INT AUTO_INCREMENT PRIMARY KEY, "
+				String createTableSQL = "CREATE TABLE parking_slots (" + "    id INT AUTO_INCREMENT PRIMARY KEY, "
 						+ "    number INT NOT NULL, " + "    type ENUM('GENERAL', 'MONTHLY_SUBSCRIBER') NOT NULL, "
 						+ "    occupied BOOLEAN NOT NULL DEFAULT FALSE, " + "    occupiedBy VARCHAR(10) NULL,  "
 						+ "    UNIQUE (number)" + ");";
@@ -44,13 +44,13 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 				}
 
 			} else {
-//				st = conn.prepareStatement(" DROP TABLE parking_spaces;");
+//				st = conn.prepareStatement(" DROP TABLE parking_slots;");
 //				st.executeUpdate();
 				System.out.println("Table already exists, drop it to create a new one.");
 
 			}
 
-			st = conn.prepareStatement("INSERT INTO parking_spaces (number, type) VALUES (?, ?)");
+			st = conn.prepareStatement("INSERT INTO parking_slots (number, type) VALUES (?, ?)");
 			for (int i = 1; i <= 500; i++) {
 
 				if (i <= 300) {
@@ -92,7 +92,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 		try {
 
-			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ?");
+			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_slots WHERE occupied = ?");
 
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
@@ -124,7 +124,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		try {
 
 			st = conn.prepareStatement(
-					"SELECT id, number, type, occupied FROM parking_spaces WHERE occupied = ? AND type = 'GENERAL';");
+					"SELECT id, number, type, occupied FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
 
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
@@ -151,7 +151,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 	@Override
 	public void occupieSlot(int number, String plate) {
 		try {
-			st = conn.prepareStatement("UPDATE parking_spaces SET occupied = TRUE, occupiedBy = ?  WHERE number = ?;");
+			st = conn.prepareStatement("UPDATE parking_slots SET occupied = TRUE, occupiedBy = ?  WHERE number = ?;");
 			st.setString(1, plate);
 			st.setInt(2, number);
 
@@ -165,8 +165,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	public void freeSlot(String plate) {
 		try {
-			st = conn.prepareStatement("UPDATE parking_spaces SET occupied = FALSE, occupiedBy = null WHERE occupiedBy = ?;");
-//	        st.setBoolean(1, occupied);
+			st = conn.prepareStatement("UPDATE parking_slots SET occupied = FALSE, occupiedBy = null WHERE occupiedBy = ?;");
 			st.setString(1, plate);
 
 			st.executeUpdate();

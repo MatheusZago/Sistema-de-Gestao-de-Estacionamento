@@ -79,7 +79,7 @@ public static void validateExitBarriers(Vehicle vehicle) {
 		String category = vehicle.getCategory().name(); //Transformando TipoModelo em String 
 		String options;
 		String[] optionsArray;
-		int choice;
+		int choice = 0;
 		boolean validOption = false;
 		
 		switch (category) {
@@ -102,23 +102,30 @@ public static void validateExitBarriers(Vehicle vehicle) {
 		System.out.println("CHOOSE A BARRIER TO LEAVE THROUGH ");
 		
 		do {
-			System.out.println("A " + category + " can leave through: " + options );
+			System.out.println("A " + category + " can entry on the following barriers: " + options );
+			System.out.println("CHOOSE A BARRIER TO ENTER THROUGH ");
 			
-			choice = sc.nextInt();
-
-			//Aqui ele vai percorrer o Array para ver se o numero digite tem nas opções válidas
-			for(String option : optionsArray) {
-				if(option.equals(String.valueOf(choice))) {
-					validOption = true;
-					break;
-				} else if(choice > 10 || choice < 6) {
-					System.out.println("Choose an existing barrier to pass through.");
-				} else if(validOption == false ) {
-					System.out.println("Choose an adequate barier for " + vehicle.getCategory());
-				} else {
-					//TODO Arrumar para não travar
-					System.out.println("Invalid number, please try again.");
+			try {
+				choice = sc.nextInt();
+				
+				// Aqui verifica se a escolha está nas opções válidas
+				validOption = false; // Reinicia a validação para cada nova tentativa
+				
+				for (String option : optionsArray) {
+					if (option.equals(String.valueOf(choice))) {
+						validOption = true;
+						break;
+					}
 				}
+				
+				if (validOption) {
+					System.out.println("Passed through the barrier " + choice);
+				} else {
+					System.out.println("Choose an adequead barrier for " + category);
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Invalid entry, please try a number.");
+				sc.next(); // Limpa o buffer do scanner
 			}
 						
 		} while (validOption == false);

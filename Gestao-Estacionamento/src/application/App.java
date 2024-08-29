@@ -64,9 +64,11 @@ public class App {
 									vehicle = new IndividualVehicle(plate, category);
 								}
 
-								System.out.println("Vehicle with plate " + vehicle.getPlate() + " is a " + vehicle.getCategory());
+								System.out.println(
+										"Vehicle with plate " + vehicle.getPlate() + " is a " + vehicle.getCategory());
 							} else {
-								System.out.println("Vehicle with plate " + vehicle.getPlate() + " is a " + vehicle.getCategory() + " and is registered.");
+								System.out.println("Vehicle with plate " + vehicle.getPlate() + " is a "
+										+ vehicle.getCategory() + " and is registered.");
 							}
 
 							// Está pegando a data e usando o formater pra deixar da forma certa
@@ -83,6 +85,7 @@ public class App {
 							}
 
 							// Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
+							// Passo 5, Adicionar no BD os dados (FEITOS)
 							vehicle.enter(vehicle, arriveDateTime);
 
 						} catch (Exception e) {
@@ -91,8 +94,6 @@ public class App {
 
 						// Passo 4, fazer a entrada do carro, se for avulso tem que ter ticket se não
 						// não precisa
-						// Passo 5, Adicionar no banco de dados "estacionamento" o carro e as vagas que
-						// ele ocupa
 
 						break;
 					}
@@ -142,13 +143,7 @@ public class App {
 							return;
 						}
 
-						// CRIOU O VEICULO, AGORA TEM QUE FAZER ELE PASSAR PELAS CATRACAS
-						System.out.println("Date and time parsed successfully: " + leaveDateTime);
 						vehicle.exit(vehicle, parkedVehicle, leaveDateTime);
-
-//						System.out.println(vehicle);
-
-//						vehicle.instantiateVehicle(parkedVehicle.getPlate(), parkedVehicle.getCategory());
 
 						break;
 					}
