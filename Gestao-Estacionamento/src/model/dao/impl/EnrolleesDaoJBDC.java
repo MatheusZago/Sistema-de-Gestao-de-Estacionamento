@@ -7,21 +7,21 @@ import java.sql.SQLException;
 
 import db.DbException;
 import model.dao.DaoFactory;
-import model.dao.RegisteredDao;
+import model.dao.EnrolleesDao;
 import model.entities.DeliveryTruck;
 import model.entities.MonthlySubscriber;
 import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
 //Usado para Implementar o acesso de dados comJBDC para Veiculos
-public class RegisteredDaoJBDC implements RegisteredDao {
+public class EnrolleesDaoJBDC implements EnrolleesDao {
 
 	private Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
 
 	// Construtor pra pegar a conexão.
-	public RegisteredDaoJBDC(Connection conn) {
+	public EnrolleesDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 
@@ -29,14 +29,14 @@ public class RegisteredDaoJBDC implements RegisteredDao {
 	@Override
 	public void insert(Vehicle vehicle) {
 		try {
-			st = conn.prepareStatement("INSERT INTO registered (plate, category) VALUES (?, ?); ");
+			st = conn.prepareStatement("INSERT INTO enrollees (plate, category) VALUES (?, ?); ");
 
 			st.setString(1, vehicle.getPlate());
 			st.setString(2, vehicle.getCategory().name()); // Esse .name ta transformando o enum em String
 
 			st.executeUpdate();
 
-			System.out.println("Vehicle registered with success!");
+			System.out.println("Vehicle enrolleed with success!");
 
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
@@ -46,9 +46,9 @@ public class RegisteredDaoJBDC implements RegisteredDao {
 
 	// USAR ISSO PRA VER SE EXISTE NA TABELA CADASTRADA
 	@Override
-	public Vehicle FindRegisteredByPlate(String plate) {
+	public Vehicle FindEnrolleesByPlate(String plate) {
 		try {
-			st = conn.prepareStatement("SELECT * FROM registered WHERE plate = ?");
+			st = conn.prepareStatement("SELECT * FROM enrollees WHERE plate = ?");
 
 			st.setString(1, plate);
 			rs = st.executeQuery();
@@ -84,8 +84,8 @@ public class RegisteredDaoJBDC implements RegisteredDao {
 		return null;
 	}
 	
-	public boolean isRegistered(String plate) {
-		Vehicle vehicle = DaoFactory.createRegisteredDaoJBDC().FindRegisteredByPlate(plate);
+	public boolean isEnrolleed(String plate) {
+		Vehicle vehicle = DaoFactory.createEnrolleesDaoJBDC().FindEnrolleesByPlate(plate);
 		
 		if(vehicle != null) {
 			return true;

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 
 import model.dao.DaoFactory;
-import model.dao.RegisteredDao;
+import model.dao.EnrolleesDao;
 import model.dao.impl.ParkingSlotDaoJBDC;
 import model.dao.impl.VehicleDaoJBDC;
 import model.enums.VehicleCategory;
@@ -14,7 +14,7 @@ import model.services.BarrierService;
 public abstract class Vehicle {
 	
 	VehicleDaoJBDC vehicleDao = DaoFactory.createVehicleDaoJBDC();
-	RegisteredDao registeredDao = DaoFactory.createRegisteredDaoJBDC();
+	EnrolleesDao registeredDao = DaoFactory.createEnrolleesDaoJBDC();
 
 	static Scanner sc = new Scanner(System.in);
 
@@ -77,7 +77,7 @@ public abstract class Vehicle {
 	}
 	
 	public static Vehicle InstantiateVehicleForEntry(String plate) {
-		Vehicle vehicle = DaoFactory.createRegisteredDaoJBDC().FindRegisteredByPlate(plate);
+		Vehicle vehicle = DaoFactory.createEnrolleesDaoJBDC().FindEnrolleesByPlate(plate);
 
 		if (vehicle != null) {
 
@@ -109,7 +109,7 @@ public abstract class Vehicle {
 	
 	public static Vehicle instantiateVehicleforExit(String plate ) {
 		Vehicle vehicle = DaoFactory.createVehicleDaoJBDC().findVehicleByPlate(plate);
-		boolean isRegistered = DaoFactory.createRegisteredDaoJBDC().isRegistered(plate);
+		boolean isRegistered = DaoFactory.createEnrolleesDaoJBDC().isEnrolleed(plate);
 		
 		System.out.println(vehicle);
 		
