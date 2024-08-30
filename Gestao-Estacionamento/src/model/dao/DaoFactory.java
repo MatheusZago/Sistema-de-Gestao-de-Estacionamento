@@ -1,23 +1,29 @@
 package model.dao;
 
 import db.DB;
-import model.dao.impl.ParkedDaoJBDC;
 import model.dao.impl.ParkingSlotDaoJBDC;
+import model.dao.impl.RegisteredDaoJBDC;
+import model.dao.impl.TicketDaoJBDC;
 import model.dao.impl.VehicleDaoJBDC;
 
 public class DaoFactory {
-	
-	//A Fabrica Dao serve par criar conexões especificas, caso quisesse outra conexão fora JBDC seria aqui
-	public static VehicleDaoJBDC createVehicleDao() {
+
+	// A Fabrica Dao serve par criar conexões especificas, caso quisesse outra
+	// conexão fora JBDC seria aqui
+	public static VehicleDaoJBDC createVehicleDaoJBDC() {
 		return new VehicleDaoJBDC(DB.getConnection());
 	}
-	
+
+	public static RegisteredDaoJBDC createRegisteredDao() {
+		return new RegisteredDaoJBDC(DB.getConnection());
+	}
+
 	public static ParkingSlotDaoJBDC createParkingSlotDao() {
 		return new ParkingSlotDaoJBDC(DB.getConnection());
 	}
-	
-	public static ParkedDaoJBDC createParkedDaoJBDC() {
-		return new ParkedDaoJBDC(DB.getConnection());
+
+	public static TicketDaoJBDC createTicketDaoJBDC() {
+		return new TicketDaoJBDC(DB.getConnection());
 	}
 
 }

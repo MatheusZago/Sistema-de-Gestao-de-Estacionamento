@@ -1,5 +1,7 @@
 package model.entities;
 
+import java.time.LocalDateTime;
+
 import model.enums.VehicleCategory;
 
 //Classe para representar o Caminhão que entrega, que implementa veiculos e herda de veiculos cadastrados
@@ -8,6 +10,11 @@ public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
 
 	public DeliveryTruck(String plate, VehicleCategory category) {
 		super(plate, category);
+		super.setSize(4);
+	}
+	
+	public DeliveryTruck(int id, String plate, VehicleCategory category) {
+		super(id, plate, category);
 		super.setSize(4);
 	}
 
@@ -19,11 +26,13 @@ public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
 //		
 //	}	
 
-//	@Override Está comentado pq o método entrar se tornou concreto de Veiculo
-//	public void entrar(String placa) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public void enter(Vehicle vehicule, LocalDateTime dateTime) {
+		super.enter(vehicule, dateTime);
+		
+		System.out.println("Chamou o do Caminhão Vehicle");
+		
+	}
 
 //	@Override
 //	public void sair(Veiculo veiculo) {

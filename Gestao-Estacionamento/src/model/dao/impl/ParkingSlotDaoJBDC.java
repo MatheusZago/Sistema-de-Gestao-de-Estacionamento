@@ -26,53 +26,31 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 	@Override
 	public void createTable() {
 		try {
-
 			// Verificar se a tabela não existe
-			if (!doesTableExist(conn, "parking_slots")) {
-
-				String createTableSQL = "CREATE TABLE parking_slots (" + "    id INT AUTO_INCREMENT PRIMARY KEY, "
-						+ "    number INT NOT NULL, " + "    type ENUM('GENERAL', 'MONTHLY_SUBSCRIBER') NOT NULL, "
-						+ "    occupied BOOLEAN NOT NULL DEFAULT FALSE, " + "    occupiedBy VARCHAR(10) NULL,  "
-						+ "    UNIQUE (number)" + ");";
+			if (doesTableExist(conn, "parking_slots") == false) {
+				String createTableSQL = "CREATE TABLE parking_slots (" + "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+						+ "type ENUM('GENERAL', 'MONTHLY_SUBSCRIBER') NOT NULL, "
+						+ "occupied BOOLEAN NOT NULL DEFAULT FALSE, " 
+						+ "occupiedby INT NULL, "
+						+ "UNIQUE (id), " + "FOREIGN KEY (occupiedby) REFERENCES vehicles(id) " + ");";
 
 				try (PreparedStatement st = conn.prepareStatement(createTableSQL)) {
 					st.executeUpdate();
-					System.out.println("Table created with sucess, crating slots...");
+					System.out.println("Table created successfully, creating slots...");
 				} catch (SQLException e) {
 					e.printStackTrace();
-					System.out.println("Error on creating table.");
+					System.out.println("Error creating table.");
 				}
+				
+				fillSlots();
 
 			} else {
-//				st = conn.prepareStatement(" DROP TABLE parking_slots;");
-//				st.executeUpdate();
 				System.out.println("Table already exists, drop it to create a new one.");
 
 			}
 
-			st = conn.prepareStatement("INSERT INTO parking_slots (number, type) VALUES (?, ?)");
-			for (int i = 1; i <= 500; i++) {
-
-				if (i <= 300) {
-
-					st.setInt(1, i);
-					st.setString(2, "GENERAL");
-					st.addBatch();
-				} else {
-
-					st.setInt(1, i);
-					st.setString(2, "MONTHLY_SUBSCRIBER");
-					st.addBatch(); // Vai adicionar numa fila de comando
-				}
-
-			}
-
-			st.executeBatch(); // Executando todas as instruções de uma vez
-			System.out.println("Created 500 parking slots.");
-
-			// TODO especificar expcetion
-		} catch (Exception e) {
-			e.getMessage();
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
 		}
 
 	}
@@ -87,23 +65,29 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	@Override
 	public List<ParkingSlot> findByOccupied(Boolean occupied) {
-
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
-
 		try {
 
-			st = conn.prepareStatement("SELECT id, number, type, occupied FROM parking_slots WHERE occupied = ?");
+			st = conn.prepareStatement("SELECT * FROM parking_slots WHERE occupied = ?");
 
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt("id");
-				int number = rs.getInt("number");
 				String type = rs.getString("type");
 				SlotType slotType = SlotType.valueOf(type);
 				boolean isOccupied = rs.getBoolean("occupied");
+				// Como occupiedBy pode ter nulo, ta pegando de forma generica
+				int occupiedById = rs.getInt("occupiedby");
 
-				ParkingSlot slot = new ParkingSlot(id, number, slotType, isOccupied);
+				ParkingSlot slot;
+
+				if (occupiedById != 0) {
+					slot = new ParkingSlot(id, slotType, isOccupied, occupiedById);
+				} else {
+					slot = new ParkingSlot(id, slotType, isOccupied, 0);
+				}
+
 				parkingSlots.add(slot);
 			}
 
@@ -118,24 +102,28 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	@Override
 	public List<ParkingSlot> findByOccupiedGeneral(Boolean occupied) {
-
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
-
 		try {
 
 			st = conn.prepareStatement(
-					"SELECT id, number, type, occupied FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
+					"SELECT id, type, occupied FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
 
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt("id");
-				int number = rs.getInt("number");
 				String type = rs.getString("type");
 				SlotType slotType = SlotType.valueOf(type);
 				boolean isOccupied = rs.getBoolean("occupied");
+				Integer occupiedById = rs.getObject("occupiedby", Integer.class);
 
-				ParkingSlot slot = new ParkingSlot(id, number, slotType, isOccupied);
+				ParkingSlot slot;
+
+				if (occupiedById != null) {
+					slot = new ParkingSlot(id, slotType, isOccupied, occupiedById);
+				} else {
+					slot = new ParkingSlot(id, slotType, isOccupied, 0);
+				}
 				parkingSlots.add(slot);
 			}
 
@@ -148,12 +136,44 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	}
 
+	public ParkingSlot findParkingSlotById(int id) {
+
+		int returnedId = 0;
+		String type = null;
+		boolean occupied = false;
+		int occubiedById = 0;
+		try {
+
+			st = conn.prepareStatement("SELECT * FROM parking_slots WHERE id = ?");
+
+			st.setInt(1, id);
+
+			rs = st.executeQuery();
+			if (rs.next()) {
+
+				returnedId = rs.getInt("id");
+				type = rs.getString("type");
+				occupied = rs.getBoolean("occupied");
+				occubiedById = rs.getInt("occupiedby");
+			}
+
+			SlotType returnedType = SlotType.valueOf(type);
+
+			return new ParkingSlot(returnedId, returnedType, occupied, occubiedById);
+
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
+
+	}
+
 	@Override
-	public void occupieSlot(int number, String plate) {
+	// TODO Ajeitar POR FAVOR
+	public void occupieSlot(int id, int vehicleId) {
 		try {
-			st = conn.prepareStatement("UPDATE parking_slots SET occupied = TRUE, occupiedBy = ?  WHERE number = ?;");
-			st.setString(1, plate);
-			st.setInt(2, number);
+			st = conn.prepareStatement("UPDATE parking_slots SET occupied = TRUE, " + " occupiedby = ?  WHERE id = ?;");
+			st.setInt(1, vehicleId);
+			st.setInt(2, id);
 
 			st.executeUpdate();
 			System.out.println("Update worked");
@@ -163,10 +183,12 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		}
 	}
 
-	public void freeSlot(String plate) {
+	@Override
+	public void freeSlot(int id) {
 		try {
-			st = conn.prepareStatement("UPDATE parking_slots SET occupied = FALSE, occupiedBy = null WHERE occupiedBy = ?;");
-			st.setString(1, plate);
+			st = conn.prepareStatement(
+					"UPDATE parking_slots SET occupied = FALSE," + " occupiedby = NULL WHERE occupiedby = ?;");
+			st.setInt(1, id);
 
 			st.executeUpdate();
 			System.out.println("Update worked");
@@ -176,4 +198,32 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		}
 	}
 
+	public void fillSlots() {
+		// Inserção de dados
+		try {
+			String insertSQL = "INSERT INTO parking_slots (type) VALUES (?)";
+
+			try (PreparedStatement st = conn.prepareStatement(insertSQL)) {
+				for (int i = 1; i <= 500; i++) {
+					if (i <= 300) {
+						st.setString(1, "GENERAL");
+					} else {
+						st.setString(1, "MONTHLY_SUBSCRIBER");
+					}
+					st.addBatch(); // Adiciona a instrução à fila de comandos
+				}
+
+				st.executeBatch(); // Executa todas as instruções de uma vez
+				System.out.println("Created 500 parking slots.");
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("Error inserting slots.");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error preparing statement.");
+		}
+	}
 }

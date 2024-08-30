@@ -1,5 +1,6 @@
 package model.entities;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 import model.enums.VehicleCategory;
@@ -27,16 +28,25 @@ public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
 			super.setSize(1);
 		}
 	}
+	
+	public MonthlySubscriber(int id, String plate, VehicleCategory category) {
+		super(id, plate, category);
+		if(super.getCategory() == VehicleCategory.CAR) {
+			super.setSize(2);
+		} else if(super.getCategory() == VehicleCategory.MOTORCYCLE) {
+			super.setSize(1);
+		}
+	}
 
 
 
-//	@Override  Está comentado pq o método entrar se tornou concreto de Veiculo
-//	public void entrar(String placa) {
-//		Veiculo veiculo = DaoFactory.criarVeiculoDao().FindCadastroByPlaca(placa);
-//		
-//		if(veiculo != null) {
-//			System.out.println("Veiculo de placa " + veiculo.getPlaca() +" é um(a) " + veiculo.getModelo() + " cadastrado(a)");
-//			
+	@Override
+	public void enter(Vehicle vehicule, LocalDateTime dateTime) {
+		super.enter(vehicule, dateTime);
+		
+		System.out.println("Chamou o da Monthly Subscriber Vehicle");
+		
+	}
 //			
 //			
 //			

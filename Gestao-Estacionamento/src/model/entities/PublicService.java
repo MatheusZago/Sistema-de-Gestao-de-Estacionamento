@@ -1,5 +1,7 @@
 package model.entities;
 
+import java.time.LocalDateTime;
+
 import model.enums.VehicleCategory;
 
 //Classe para implementar Veiculos de Serviço Publico, que não são cadastrados.
@@ -9,14 +11,19 @@ public class PublicService extends Vehicle {
 		super(plate, category);
 		super.setSize(0);
 	}
+	
+	public PublicService(int id, String plate, VehicleCategory category) {
+		super(id, plate, category);
+		super.setSize(0);
+	}
 
-//	@Override
-//	public void entrar(Veiculo veiculo) {
-//		DaoFactory.criarVeiculoDao();
-//		
-//		
-//		
-//	}
+	@Override
+	public void enter(Vehicle vehicule, LocalDateTime dateTime) {
+		super.enter(vehicule, dateTime);
+		
+		System.out.println("Chamou o da Public Service Vehicle");
+		
+	}
 //
 //	@Override
 //	public void sair(Veiculo veiculo) {

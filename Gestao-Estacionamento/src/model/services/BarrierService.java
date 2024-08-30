@@ -10,7 +10,7 @@ public class BarrierService {
 	static Scanner sc = new Scanner(System.in);
 	
 	//Serviços para fazer a questão de validação de qual cancela pode ser usada por qual veiculo
-	public static void validateEntryBarriers(Vehicle vehicle) {
+	public static int validateEntryBarriers(Vehicle vehicle) {
 		
 		String category = vehicle.getCategory().name(); //Transformando TipoModelo em String 
 		String options;
@@ -68,14 +68,13 @@ public class BarrierService {
 						
 		} while (validOption == false);
 		
+		System.out.println("Entered through barrier " + choice);
 		
+		return choice;
 		
 	}
 	
-public static void validateExitBarriers(Vehicle vehicle) {
-	
-	System.out.println("Called function to exit");
-		
+public static int validateExitBarriers(Vehicle vehicle) {	
 		String category = vehicle.getCategory().name(); //Transformando TipoModelo em String 
 		String options;
 		String[] optionsArray;
@@ -132,6 +131,7 @@ public static void validateExitBarriers(Vehicle vehicle) {
 		
 		System.out.println("Left through barrier " + choice);
 		
+		return choice;
 		
 	}
 	

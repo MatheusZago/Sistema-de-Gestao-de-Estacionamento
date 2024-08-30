@@ -1,15 +1,16 @@
 USE sistemagaragem;
 
-CREATE TABLE parking_spaces (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    number INT NOT NULL,
+CREATE TABLE parking_slots (
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     type ENUM('GENERAL', 'MONTHLY_SUBSCRIBER') NOT NULL,
     occupied BOOLEAN NOT NULL DEFAULT FALSE,
-    UNIQUE (number)
+	occupiedby INT NULL,
+    UNIQUE (id),
+    FOREIGN KEY (occupiedby) REFERENCES vehicles(id)
 );
 
- DROP TABLE parking_spaces;
 
-SELECT * FROM parking_spaces;
+  DROP TABLE parking_slots;
+SELECT * FROM parking_slots;
 
-UPDATE parking_spaces SET occupied = TRUE WHERE number IN  (60, 49, 21);
+UPDATE parking_slots SET occupied = TRUE WHERE id IN  (60, 49, 21);

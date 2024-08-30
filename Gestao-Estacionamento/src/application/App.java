@@ -6,11 +6,10 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import model.dao.DaoFactory;
-import model.dao.impl.ParkedDaoJBDC;
+import model.dao.impl.VehicleDaoJBDC;
 import model.entities.DeliveryTruck;
 import model.entities.IndividualVehicle;
 import model.entities.MonthlySubscriber;
-import model.entities.Parked;
 import model.entities.PublicService;
 import model.entities.Vehicle;
 import model.enums.VehicleCategory;
@@ -21,6 +20,7 @@ public class App {
 
 	public static void main(String[] args) {
 
+		VehicleDaoJBDC newVehicle = DaoFactory.createVehicleDaoJBDC();
 		Scanner sc = new Scanner(System.in);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 		boolean test = true;
@@ -39,8 +39,7 @@ public class App {
 					int choice = sc.nextInt();
 
 					switch (choice) {
-					case 1: { // QUASE FEITO, FALTA APENAS O TICKET, IMPEDIR PLACAS DUPLICADAS E QUE AS VAGAS
-								// TENHAM DE SER UMA DO LADO DA OUTRA
+					case 1: { // IMPEDIR PLACAS DUPLICADAS
 						try {
 							// Passo 1, construir o carro que quer entrar (FEITO)
 							System.out.println();
@@ -48,9 +47,8 @@ public class App {
 							System.out.print("Enter the plate number: ");
 							String plate = sc.next().toUpperCase();
 
-							// 2 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO: (FEITO)
+							// 2 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO:
 							Vehicle vehicle = VerifyRegisterService.verifyRegister(plate);
-							// Se o veiculo não estiver registrado ele constroi ele assim.
 							if (vehicle == null) {
 //								// TODO adicionar um erro caso tente entrar com caminhão não registrado.
 								System.out.println("Vehicle not registered.");
@@ -64,12 +62,19 @@ public class App {
 									vehicle = new IndividualVehicle(plate, category);
 								}
 
-								System.out.println(
-										"Vehicle with plate " + vehicle.getPlate() + " is a " + vehicle.getCategory());
 							} else {
 								System.out.println("Vehicle with plate " + vehicle.getPlate() + " is a "
 										+ vehicle.getCategory() + " and is registered.");
+
 							}
+
+							// Inserindo o novo veiculo na base de dados para que ele seja considerado
+							// dentro do estacionamento
+							newVehicle.insert(vehicle);
+
+							// Ele ta fazendo isso só pra epgar o objeto completo do banco de dados,
+							// incluindo o ID que foi gerado
+							vehicle = newVehicle.findVehicleByPlate(vehicle.getPlate());
 
 							// Está pegando a data e usando o formater pra deixar da forma certa
 							System.out.println("Enter the date for your arrival (dd/MM/yyyy HH:mm)");
@@ -84,16 +89,13 @@ public class App {
 								return;
 							}
 
-							// Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
-							// Passo 5, Adicionar no BD os dados (FEITOS)
+							System.out.println(vehicle.getId());
+
 							vehicle.enter(vehicle, arriveDateTime);
 
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-
-						// Passo 4, fazer a entrada do carro, se for avulso tem que ter ticket se não
-						// não precisa
 
 						break;
 					}
@@ -105,28 +107,29 @@ public class App {
 						String plate = sc.next().toUpperCase();
 						System.out.println();
 
-						ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
+//						ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
 						// Ele ta instanciando um veiculo estacionado de acordo com oq recebe.
-						Parked parkedVehicle = parked.findByPlate(plate);
-						Vehicle vehicle;
+//						Parked parkedVehicle = parked.findByPlate(plate);
+
+						Vehicle vehicle = newVehicle.findVehicleByPlate(plate);
 
 						// CRIAR TIPO DE VEICULO
-						// Se ele achar um veiculo registrado.
-						if (VerifyRegisterService.verifyRegister(parkedVehicle.getPlate()) != null) {
+						// Se ele achar um veiculo cadastrad.
+						if (VerifyRegisterService.verifyRegister(vehicle.getPlate()) != null) {
 
 							// Se ele estiver registrado vai ser criado de acordo com o tipo
-							if (parkedVehicle.getCategory() == VehicleCategory.TRUCK) {
-								vehicle = new DeliveryTruck(plate, parkedVehicle.getCategory());
+							if (vehicle.getCategory() == VehicleCategory.TRUCK) {
+								vehicle = new DeliveryTruck(vehicle.getId(), plate, vehicle.getCategory());
 							} else {
-								vehicle = new MonthlySubscriber(plate, parkedVehicle.getCategory());
+								vehicle = new MonthlySubscriber(vehicle.getId(), plate, vehicle.getCategory());
 							}
 
 						} else {
 
-							if (parkedVehicle.getCategory() == VehicleCategory.PUBLIC) {
-								vehicle = new PublicService(plate, parkedVehicle.getCategory());
+							if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
+								vehicle = new PublicService(vehicle.getId(), plate, vehicle.getCategory());
 							} else {
-								vehicle = new IndividualVehicle(plate, parkedVehicle.getCategory());
+								vehicle = new IndividualVehicle(vehicle.getId(), plate, vehicle.getCategory());
 							}
 
 						}
@@ -143,14 +146,15 @@ public class App {
 							return;
 						}
 
-						vehicle.exit(vehicle, parkedVehicle, leaveDateTime);
+						vehicle.exit(vehicle, leaveDateTime);
 
 						break;
 					}
 					case 3: {// BASICAMENTE FEITO, APENAS MELHORIAS E BUGS
 
 						// Aqu está puxando o cridor de veiculos do BD
-						DaoFactory.createVehicleDao();
+						System.out.println("Let's register your vehicle!");
+						DaoFactory.createRegisteredDao();
 						System.out.print("Enter vehicle plate: ");
 						String plate = sc.next();
 						// TODO, dar um erro para evitar placas repetidas sem quebrar o programa.
@@ -173,8 +177,6 @@ public class App {
 							registered = null;
 							System.out.println("Invalid vehicle, try again.");
 						}
-
-						System.out.println(registered.getSize());
 
 						break;
 					}

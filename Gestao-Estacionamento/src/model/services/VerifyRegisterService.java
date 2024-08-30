@@ -13,7 +13,7 @@ public class VerifyRegisterService {
 	static Scanner sc = new Scanner(System.in);
 
 	public static Vehicle verifyRegister(String plate) {
-		Vehicle vehicle = DaoFactory.createVehicleDao().FindRegisteredByPlate(plate);
+		Vehicle vehicle = DaoFactory.createRegisteredDao().FindRegisteredByPlate(plate);
 
 		if (vehicle != null) {
 
