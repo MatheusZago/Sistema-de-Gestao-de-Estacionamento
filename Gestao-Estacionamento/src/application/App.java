@@ -1,6 +1,9 @@
 package application;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -75,9 +78,12 @@ public class App {
 								return;
 							}
 
-							System.out.println(vehicle.getId());
+							//Transformando o date time padronizado em timeStamp
+							Instant instant = arriveDateTime.atZone(ZoneId.systemDefault()).toInstant();
+							Timestamp arriveTimeStamp = Timestamp.from(instant);
+							
 
-							vehicle.enter(vehicle, arriveDateTime);
+							vehicle.enter(vehicle, arriveTimeStamp);
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -109,7 +115,11 @@ public class App {
 							return;
 						}
 						
-						vehicle.exit(vehicle, leaveDateTime);
+						//Transformando o date time padronizado em timeStamp
+						Instant instant = leaveDateTime.atZone(ZoneId.systemDefault()).toInstant();
+						Timestamp exitTimeStamp = Timestamp.from(instant);
+						
+						vehicle.exit(vehicle, exitTimeStamp);
 
 						break;
 					}

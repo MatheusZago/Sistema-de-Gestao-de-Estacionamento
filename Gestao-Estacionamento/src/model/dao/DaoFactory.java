@@ -2,6 +2,7 @@ package model.dao;
 
 import db.DB;
 import model.dao.impl.ParkingSlotDaoJBDC;
+import model.dao.impl.RegistersDaoJBDC;
 import model.dao.impl.EnrolleesDaoJBDC;
 import model.dao.impl.TicketDaoJBDC;
 import model.dao.impl.VehicleDaoJBDC;
@@ -24,6 +25,10 @@ public class DaoFactory {
 
 	public static TicketDaoJBDC createTicketDaoJBDC() {
 		return new TicketDaoJBDC(DB.getConnection());
+	}
+	
+	public static RegistersDaoJBDC createRegisterDaoJBDC() {
+		return new RegistersDaoJBDC(DB.getConnection());
 	}
 
 }

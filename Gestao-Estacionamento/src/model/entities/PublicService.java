@@ -1,6 +1,6 @@
 package model.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import model.enums.VehicleCategory;
 
@@ -19,7 +19,7 @@ public class PublicService extends Vehicle {
 	}
 
 	@Override
-	public void enter(Vehicle vehicule, LocalDateTime dateTime) {
+	public void enter(Vehicle vehicule, Timestamp dateTime) {
 		super.enter(vehicule, dateTime);
 		
 		System.out.println("Chamou o da Public Service Vehicle");

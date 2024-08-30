@@ -1,11 +1,11 @@
 package model.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import model.enums.VehicleCategory;
 
 //Classe para representar o Caminhão que entrega, que implementa veiculos e herda de veiculos cadastrados
-public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
+public class DeliveryTruck extends Vehicle implements EnrolleedVehicle{
 
 
 	public DeliveryTruck(String plate, VehicleCategory category) {
@@ -28,7 +28,7 @@ public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
 //	}	
 
 	@Override
-	public void enter(Vehicle vehicule, LocalDateTime dateTime) {
+	public void enter(Vehicle vehicule, Timestamp dateTime) {
 		super.enter(vehicule, dateTime);
 		
 		System.out.println("Chamou o do Caminhão Vehicle");

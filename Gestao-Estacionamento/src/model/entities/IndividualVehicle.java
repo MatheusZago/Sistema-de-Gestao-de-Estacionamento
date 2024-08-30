@@ -1,6 +1,6 @@
 package model.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import model.dao.impl.TicketDaoJBDC;
 import model.enums.VehicleCategory;
@@ -33,7 +33,7 @@ public class IndividualVehicle extends Vehicle {
 	}
 
 	@Override
-	public void enter(Vehicle vehicle, LocalDateTime dateTime) {
+	public void enter(Vehicle vehicle, Timestamp dateTime) {
 		
 //		System.out.println();
 //		System.out.println("Enter by the barriers: ");

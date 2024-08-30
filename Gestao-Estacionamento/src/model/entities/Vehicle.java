@@ -1,6 +1,6 @@
 package model.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Scanner;
 
 import model.dao.DaoFactory;
@@ -134,7 +134,7 @@ public abstract class Vehicle {
 
 	}
 
-	public void enter(Vehicle vehicle, LocalDateTime dateTime) {
+	public void enter(Vehicle vehicle, Timestamp timeStamp) {
 		// Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
 //		System.out.println("Enter by the barriers: ");
 //		BarrierService.validateEntryBarriers(vehicle);
@@ -170,7 +170,7 @@ public abstract class Vehicle {
 
 	}
 
-	public void exit(Vehicle vehicle, LocalDateTime time) {
+	public void exit(Vehicle vehicle, Timestamp time) {
 		
 		if(vehicle instanceof IndividualVehicle) {
 			System.out.println("Avulso");
@@ -183,7 +183,7 @@ public abstract class Vehicle {
 		}
 		
 		System.out.println();
-		System.out.println("Leaving by the barrier: ");
+
 		BarrierService.validateExitBarriers(vehicle);
 
 		//Se ele não for publico ele libera uma vaga, já que os públicos não ocupam

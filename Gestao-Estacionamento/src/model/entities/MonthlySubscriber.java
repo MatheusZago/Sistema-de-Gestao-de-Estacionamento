@@ -1,13 +1,17 @@
 package model.entities;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.Scanner;
 
+import model.dao.DaoFactory;
+import model.dao.RegistersDao;
 import model.enums.VehicleCategory;
+import model.services.BarrierService;
 
 //Classe para representar os mensalistas, que implmeneta veiculos e herda de Veiculos Cadastrados
-public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
+public class MonthlySubscriber extends Vehicle implements EnrolleedVehicle{
 	
+	RegistersDao register = DaoFactory.createRegisterDaoJBDC();
 	Scanner sc = new Scanner(System.in);
 
 	public MonthlySubscriber(String plate) {
@@ -42,8 +46,14 @@ public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
 
 
 	@Override
-	public void enter(Vehicle vehicule, LocalDateTime dateTime) {
-		super.enter(vehicule, dateTime);
+	public void enter(Vehicle vehicle, Timestamp dateTime) {
+		//Chamou a catraca, não precisa retornar ela pq o monthly nn usa
+		BarrierService.validateEntryBarriers(vehicle);
+		//Chamou o processo de entrada
+		super.enter(vehicle, dateTime);
+		
+
+		register.insert(dateTime, vehicle.getPlate());
 		
 		System.out.println("Chamou o da Monthly Subscriber Vehicle");
 		
@@ -54,11 +64,17 @@ public class MonthlySubscriber extends Vehicle implements RegisteredVehicle{
 	
 	
 	
-//	@Override
-//	public void exit(Vehicle veiculo,) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public void exit(Vehicle vehicle, Timestamp time) {
+		
+		BarrierService.validateExitBarriers(vehicle);
+		super.exit(vehicle, time);
+		register.update(time, vehicle.getPlate());
+		
+		System.out.println("Chamou o exit do montly subscriber");
+		
+		
+	}
 
 
 	//ESSA CLASSE ESTÁ COMENTADA PQ O VEICULO CADASTRADO TEM O METODO DEFAULT
