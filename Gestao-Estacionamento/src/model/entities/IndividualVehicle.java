@@ -1,19 +1,22 @@
 package model.entities;
 
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
+import model.dao.DaoFactory;
 import model.dao.impl.TicketDaoJBDC;
 import model.enums.VehicleCategory;
 
 //Classe para representar os veiculos avulsos, não cadastrados.
 public class IndividualVehicle extends Vehicle {
 	
-	TicketDaoJBDC ticketDao;
+	TicketDaoJBDC ticketDao = DaoFactory.createTicketDaoJBDC();
 
 	// Ppegando construtor da classe abstrata
 	public IndividualVehicle( String plate, VehicleCategory category) {
 		super( plate, category);
-		System.out.println("Construtor Avulso");
 		
 		if (super.getCategory() == VehicleCategory.CAR) {
 			super.setSize(2);
@@ -35,44 +38,75 @@ public class IndividualVehicle extends Vehicle {
 	@Override
 	public void enter(Vehicle vehicle, Timestamp dateTime) {
 		
-//		System.out.println();
-//		System.out.println("Enter by the barriers: ");
+		String numberValue;
 //		int entryBarrier = BarrierService.validateEntryBarriers(vehicle);
-
 		// Ele já colocou a vaga
 		super.enter(vehicle, dateTime);
+		int entryBarrier = super.getEntryBarrier();
+		
+		//Aqui vai transformar em String para que possa concatenar as multiplas vagas
+		//Sendo ocupados por carros ou caminhões
+		int[] choices = getChoices();
+		if(choices.length == 1) {
+			numberValue = String.valueOf(choices);
+		} else {
+			//Caso tenha mais de um valor ele vai juntar todos para serem colocados no ticket
+			numberValue = Arrays.stream(choices)
+						.mapToObj(String::valueOf)
+						.collect(Collectors.joining(", "));
+		}
+		
+		ticketDao.insert(vehicle.getId(), vehicle.getPlate(), dateTime, entryBarrier, numberValue);
 
 		System.out.println("Chamou o enter do avulso");
-		
-//		ParkedDaoJBDC parkedDao = DaoFactory.createParkedDaoJBDC();
-//		List<Integer> chosenSlot = parkedDao.findSlotByPlate(getPlate());
-		
-		//Ta apenas pegando o menor e o maior número da lista
-//        int minSlot = Collections.min(chosenSlot);
-//        int maxSlot = Collections.max(chosenSlot);
-        
-//        String slotNumber = 
-
-
-//		for (int i = 1; i < vehicle.getSize(); i++) {
-//
-//			ticketDao.insert(getPlate(), dateTime, entryBarrier, slotNumber);
-//}
-        
+		        
 		}
-
-//	public void exit(Vehicle vehicle , LocalDateTime time) {
-//
+	
+	@Override
+	public void exit(Vehicle vehicle ,  Timestamp exitTimeStamp) {
 //		System.out.println("Leaving by the barrier: ");
-//		int exitBarrier = BarrierService.validateExitBarriers(vehicle);
-//
-//		if (vehicle.getCategory() != VehicleCategory.PUBLIC) {
-//			slot.freeSlot(vehicle.getId());
-////			vehicle.de
-////			parked.remove(vehicle);
-//
-//		}
+//		int exitBarrier = BarrierService.validateExitBarriers(vehicle);		
+		super.exit(vehicle, exitTimeStamp);
+		int exitBarrier = super.getExitBarrier();
 		
-//		ticketDao.updateTicket();
-//	}
+		//FAZER A LÓGICA DA CONTA
+		double charge = charge(vehicle.getId(), exitTimeStamp);
+		
+		ticketDao.updateTicket(exitTimeStamp, exitBarrier, charge, vehicle.getId());;
+	}
+
+
+	public double charge(int vehicleId, Timestamp exitStamp) {
+		
+		double chargePerMin = 0.10;
+		double mininumCharge = 5.00;
+				
+		TicketDaoJBDC ticket = DaoFactory.createTicketDaoJBDC();
+		Ticket returnedTicket = ticket.findEntryTicketByVehicleId(vehicleId);
+		
+		Timestamp dateOfEntry = returnedTicket.getEntryTime();
+		Timestamp dateOfExit = exitStamp;
+		
+        // Calcula a diferença em milissegundos
+        long millisecondsDifference = dateOfExit.getTime() - dateOfEntry.getTime();
+
+        // Converte a diferença para Duration
+        Duration duration = Duration.ofMillis(millisecondsDifference);
+
+        // Obter a diferença em diferentes unidades
+//        long hours = duration.toHours();
+        long minutes = duration.toMinutes();
+        
+        double charge = minutes * chargePerMin;
+        
+
+        if(charge < mininumCharge) {
+        	charge = mininumCharge;
+        } 
+        
+
+		return charge;
+	}
+
+
 }

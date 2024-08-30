@@ -62,7 +62,6 @@ public class App {
 //							// Ele ta fazendo isso só pra epgar o objeto completo do banco de dados,
 //							// incluindo o ID que foi gerado
 							Vehicle idRetrieve = newVehicle.findVehicleByPlate(vehicle.getPlate());
-							System.out.println(idRetrieve);
 							vehicle.setId(idRetrieve.getId());
 //
 //							// Está pegando a data e usando o formater pra deixar da forma certa
@@ -101,7 +100,6 @@ public class App {
 
 						
 						
-						Vehicle vehicle = Vehicle.instantiateVehicleforExit(plate);
 						
 						System.out.println("Enter the date for your exit (dd/MM/yyyy HH:mm)");
 						sc.nextLine();
@@ -118,6 +116,8 @@ public class App {
 						//Transformando o date time padronizado em timeStamp
 						Instant instant = leaveDateTime.atZone(ZoneId.systemDefault()).toInstant();
 						Timestamp exitTimeStamp = Timestamp.from(instant);
+						
+						Vehicle vehicle = Vehicle.instantiateVehicleforExit(plate);
 						
 						vehicle.exit(vehicle, exitTimeStamp);
 

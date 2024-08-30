@@ -13,6 +13,8 @@ public interface EnrolleedVehicle {
 	}
 
 	void enter(Vehicle vehicle, Timestamp dateTime);
+
+	double charge(int vehicleId);
 	
 	
 }

@@ -4,7 +4,8 @@ import java.sql.Timestamp;
 
 public interface TicketDao {
 	
-	public void insert(String plate, Timestamp entryTime, int entryBarrier, int slotNumber);
-	void updateTicket(Timestamp exitTime, int exitBarrier, double amountDue, String plate);
+
+	void insert(int vehicleId, String plate, Timestamp entryTime, int entryBarrier, String numberValue);
+	void updateTicket(Timestamp exitTime, int exitBarrier, double amountDue, int vehicleId);
 
 }

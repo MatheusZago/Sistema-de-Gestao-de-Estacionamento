@@ -5,16 +5,18 @@ import java.sql.Timestamp;
 public class Ticket {
 
 	private int id;
+	private int vehicleId;
 	private String plate;
 	private Timestamp entryTime;
 	private Timestamp exitTime;
 	private int entryBarrier;
 	private int exitBarrier;
-	private int slotNumber;
+	private String slotNumber;
 	private double amountDue;
 
-	public Ticket(int id, String plate, Timestamp entryTime, int entryBarrier, int slotNumber) {
+	public Ticket(int id, int vehicleId, String plate, Timestamp entryTime, int entryBarrier, String slotNumber) {
 		this.id = id;
+		this.vehicleId = vehicleId;
 		this.plate = plate;
 		this.entryTime = entryTime;
 		this.exitTime = null;
@@ -24,9 +26,11 @@ public class Ticket {
 		this.amountDue = 0.0;
 	}
 
-	public Ticket(int id, String plate, Timestamp entryTime, Timestamp exitTime, int entryBarrier, int exitBarrier,
-			int slotNumber, double amountDue) {
+	public Ticket(int id, int vehicleId , String plate, 
+			Timestamp entryTime, Timestamp exitTime, int entryBarrier, int exitBarrier,
+			String slotNumber, double amountDue) {
 		this.id = id;
+		this.vehicleId = vehicleId;
 		this.plate = plate;
 		this.entryTime = entryTime;
 		this.exitTime = exitTime;
@@ -84,11 +88,11 @@ public class Ticket {
 		this.exitBarrier = exitBarrier;
 	}
 
-	public int getSlotNumber() {
+	public String getSlotNumber() {
 		return slotNumber;
 	}
 
-	public void setSlotNumber(int slotNumber) {
+	public void setSlotNumber(String slotNumber) {
 		this.slotNumber = slotNumber;
 	}
 
@@ -99,14 +103,24 @@ public class Ticket {
 	public void setAmountDue(double amountDue) {
 		this.amountDue = amountDue;
 	}
+	
+	public int getIdVehicle() {
+		return vehicleId;
+	}
+
+	public void setIdVehicle(int idVehicle) {
+		this.vehicleId = idVehicle;
+	}
 
 	public String printTicketEntry() {
-		return "Ticket:" + id + " plate: " + plate + "\n" + "Entered: " + entryTime + " Through: " + entryBarrier
-				+ "Parked at: " + slotNumber;
+		return "Ticket: " + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
+				+ "\n" + "Entered at: " + entryTime + " Through barrier: " + entryBarrier
+				+ "\n" + "Parked at: " + slotNumber;
 	}
 
 	public String printTicketExit() {
-		return "Ticket:" + id + " plate: " + plate + "\n" + "Entered: " + entryTime + " Through barrier: "
+		return "Ticket:" + id + " plate: " + plate +  " id vehicle: " + vehicleId  
+				+ "\n" + "Entered: " + entryTime + " Through barrier: "
 				+ entryBarrier + "Left " + exitTime + " Thought barrier: " + exitBarrier + "Parked at: " + slotNumber
 				+ " value: " + amountDue;
 	}

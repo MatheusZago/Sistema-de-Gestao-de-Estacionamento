@@ -13,7 +13,7 @@ public class BarrierService {
 	// qual veiculo
 	public static int validateEntryBarriers(Vehicle vehicle) {
 
-		System.out.println("Enter by the barriers: ");
+//		System.out.println("Enter by the barriers: ");
 
 		String category = vehicle.getCategory().name(); // Transformando TipoModelo em String
 		String options;
@@ -45,8 +45,9 @@ public class BarrierService {
 		System.out.println();
 
 		do {
-			System.out.println("A " + category + " can entry on the following barriers: " + options);
-			System.out.println("CHOOSE A BARRIER TO ENTER THROUGH ");
+			System.out.println("A " + category + " can entry on the following barriers: " );
+			System.out.println(options);
+			System.out.println("Choose a barrier to enter through: ");
 
 			try {
 				choice = sc.nextInt();
@@ -61,8 +62,8 @@ public class BarrierService {
 					}
 				}
 
-				if (validOption) {
-					System.out.println("Passed through the barrier " + choice);
+				if (validOption == true) {
+					System.out.println("Entered through the barrier " + choice);
 				} else {
 					System.out.println("Choose an adequead barrier for " + category);
 				}
@@ -73,8 +74,8 @@ public class BarrierService {
 
 		} while (validOption == false);
 
-		System.out.println("Entered through barrier " + choice);
-
+		System.out.println();//Apenas para pular uma linha
+		
 		return choice;
 
 	}
@@ -107,7 +108,8 @@ public class BarrierService {
 
 		do {
 			System.out.println();
-			System.out.println("A " + category + " can leave through the following barriers: " + options);
+			System.out.println("A " + category + " can leave through the following barriers: " );
+			System.out.println(options);
 			System.out.println("Choose a barrier to leave through.");
 
 			try {
@@ -123,7 +125,7 @@ public class BarrierService {
 					}
 				}
 
-				if (validOption) {
+				if (validOption == true) {
 					System.out.println("Left through the barrier " + choice);
 				} else {
 					System.out.println("Choose an adequead barrier for " + category);
@@ -135,6 +137,8 @@ public class BarrierService {
 
 		} while (validOption == false);
 
+		System.out.println();//Apenas para pular uma linha
+		
 		return choice;
 
 	}

@@ -9,7 +9,6 @@ public class PublicService extends Vehicle {
 
 	public PublicService(String plate, VehicleCategory category) {
 		super(plate, category);
-		System.out.println("Construtor Publico");
 		super.setSize(0);
 	}
 	
@@ -31,5 +30,11 @@ public class PublicService extends Vehicle {
 //		// TODO Auto-generated method stub
 //		
 //	}
+
+	@Override
+	//Não pagam cobrança
+	public double charge(int vehicleId) {
+		return 0;
+	}
 
 }

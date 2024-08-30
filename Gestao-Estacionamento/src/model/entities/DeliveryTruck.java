@@ -10,7 +10,6 @@ public class DeliveryTruck extends Vehicle implements EnrolleedVehicle{
 
 	public DeliveryTruck(String plate, VehicleCategory category) {
 		super(plate, category);
-		System.out.println("Construtor Caminhão");
 		super.setSize(4);
 	}
 	
@@ -33,6 +32,12 @@ public class DeliveryTruck extends Vehicle implements EnrolleedVehicle{
 		
 		System.out.println("Chamou o do Caminhão Vehicle");
 		
+	}
+
+	@Override
+	public double charge(int vehicleId) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 //	@Override

@@ -33,7 +33,7 @@ public class VehicleDaoJBDC implements VehicleDao {
 
 			st.executeUpdate();
 
-			System.out.println("Vehicle created with success!");
+//			System.out.println("Vehicle created with success!");
 
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
@@ -85,7 +85,7 @@ public class VehicleDaoJBDC implements VehicleDao {
 	}
 
 	public void deleteVehicle(int id) {
-		System.out.println("id: " + id);
+
 		
 		try {
 			st = conn.prepareStatement("DELETE FROM vehicles WHERE id = ?;");
@@ -93,7 +93,7 @@ public class VehicleDaoJBDC implements VehicleDao {
 
 			st.executeUpdate();
 
-			System.out.println("Veiculo deletado com sucesso.");
+//			System.out.println("Veiculo deletado com sucesso.");
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
 		}

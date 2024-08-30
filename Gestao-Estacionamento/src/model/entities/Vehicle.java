@@ -15,6 +15,7 @@ public abstract class Vehicle {
 	
 	VehicleDaoJBDC vehicleDao = DaoFactory.createVehicleDaoJBDC();
 	EnrolleesDao registeredDao = DaoFactory.createEnrolleesDaoJBDC();
+	ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
 
 	static Scanner sc = new Scanner(System.in);
 
@@ -22,8 +23,10 @@ public abstract class Vehicle {
 	private String plate;
 	private VehicleCategory category;
 	private int size;
-	ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
-//	ParkedDaoJBDC parked = DaoFactory.createParkedDaoJBDC();
+	private int[] choices;
+	int exitBarrier;
+	int entryBarrier;
+	
 
 	public Vehicle() {
 
@@ -76,6 +79,30 @@ public abstract class Vehicle {
 		this.size = size;
 	}
 	
+	public int[] getChoices() {
+		return choices;
+	}
+
+	public void setChoices(int[] choices) {
+		this.choices = choices;
+	}
+	
+	public int getExitBarrier() {
+		return exitBarrier;
+	}
+
+	public void setExitBarrier(int exitBarrier) {
+		this.exitBarrier = exitBarrier;
+	}
+	
+	public int getEntryBarrier() {
+		return entryBarrier;
+	}
+
+	public void setEntryBarrier(int entryBarrier) {
+		this.entryBarrier = entryBarrier;
+	}
+
 	public static Vehicle InstantiateVehicleForEntry(String plate) {
 		Vehicle vehicle = DaoFactory.createEnrolleesDaoJBDC().FindEnrolleesByPlate(plate);
 
@@ -111,8 +138,6 @@ public abstract class Vehicle {
 		Vehicle vehicle = DaoFactory.createVehicleDaoJBDC().findVehicleByPlate(plate);
 		boolean isRegistered = DaoFactory.createEnrolleesDaoJBDC().isEnrolleed(plate);
 		
-		System.out.println(vehicle);
-		
 		if(isRegistered == true) {
 			if (vehicle.getCategory() == VehicleCategory.TRUCK) {
 			return vehicle = new DeliveryTruck(vehicle.getId(), plate, vehicle.getCategory());
@@ -123,7 +148,6 @@ public abstract class Vehicle {
 	} else {
 
 		if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
-			System.out.println("Chamou construtor publico no instantiate");
 			return vehicle = new PublicService(vehicle.getId(), plate, vehicle.getCategory());
 		} else {
 			return vehicle = new IndividualVehicle(vehicle.getId(), plate, vehicle.getCategory());
@@ -134,10 +158,10 @@ public abstract class Vehicle {
 
 	}
 
-	public void enter(Vehicle vehicle, Timestamp timeStamp) {
-		// Passo 3, ver qual o tipo do carro para saber qual catraca ele passa (FEITO)
-//		System.out.println("Enter by the barriers: ");
-//		BarrierService.validateEntryBarriers(vehicle);
+	public void enter(Vehicle vehicle, Timestamp arriveTimeStamp) {
+		
+		entryBarrier = BarrierService.validateEntryBarriers(vehicle);
+		this.choices = new int[vehicle.getSize()];
 
 		if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
 			System.out.println("Entered on a special parking slot, not counted on the 500.");
@@ -146,45 +170,46 @@ public abstract class Vehicle {
 			System.out.println("Available slots: ");
 
 			if (vehicle instanceof MonthlySubscriber) {
-
-				System.out.println("Foi considerado montlhy subscriver");
 				slot.findByOccupied(false);
 			} else {
-				System.out.println("Foi considerado avulso");
 				slot.findByOccupiedGeneral(false);
 			}
 
-			int choice = 0;
-
+			//ESCOLHER VAGA();
+			
 			// Tamanho precisa de vagas para o tamanho dele.
-			for (int i = 1; i <= vehicle.size; i++) {
-				System.out.println("Escolha a vaga " + i);
+			for (int i = 0; i < vehicle.size; i++) {
+				int choice = 0;
+				System.out.println("Escolha a vaga " + (i+1));
 				choice = sc.nextInt();
+				
+				choices[i] = choice;
 				slot.occupieSlot(choice, vehicle.getId());
-//				parked.insert(vehicle, dateTime, choice);
 
 			}
-			System.out.println("Insert in Parked worked!");
+			System.out.println("Slots occupied worked!");
 
 		}
 
 	}
 
-	public void exit(Vehicle vehicle, Timestamp time) {
+	public void exit(Vehicle vehicle, Timestamp exitTimeStamp) {
 		
-		if(vehicle instanceof IndividualVehicle) {
-			System.out.println("Avulso");
-		} else if(vehicle instanceof DeliveryTruck) {
-			System.out.println("Truck");
-		} else if(vehicle instanceof PublicService) {
-			System.out.println("Public");
-		} else if(vehicle instanceof MonthlySubscriber) {
-			System.out.println("Mensalista");
-		}
+		System.out.println("Leaving by the barrier: ");
+		exitBarrier = BarrierService.validateExitBarriers(vehicle);
 		
-		System.out.println();
-
-		BarrierService.validateExitBarriers(vehicle);
+//		if(vehicle instanceof IndividualVehicle) {
+//			System.out.println("Avulso");
+//		} else if(vehicle instanceof DeliveryTruck) {
+//			System.out.println("Truck");
+//		} else if(vehicle instanceof PublicService) {
+//			System.out.println("Public");
+//		} else if(vehicle instanceof MonthlySubscriber) {
+//			System.out.println("Mensalista");
+//		}
+		
+//		System.out.println();
+//		BarrierService.validateExitBarriers(vehicle);
 
 		//Se ele não for publico ele libera uma vaga, já que os públicos não ocupam
 		if (vehicle.getCategory() != VehicleCategory.PUBLIC) {
@@ -194,10 +219,23 @@ public abstract class Vehicle {
 		vehicleDao.deleteVehicle(vehicle.getId());
 
 	}
+	
+//	public abstract double charge(int vehicleId);
 
 	@Override
 	public String toString() {
 		return "id: " + id + " plate: " + plate + ", Category: " + category + ", size: " + size;
 	}
+//
+	public double charge(int vehicleId, Timestamp exitStamp) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public double charge(int vehicleId) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }

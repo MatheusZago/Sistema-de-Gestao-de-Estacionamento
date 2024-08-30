@@ -176,7 +176,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 			st.setInt(2, id);
 
 			st.executeUpdate();
-			System.out.println("Update worked");
+//			System.out.println("Update worked");
 
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
@@ -191,7 +191,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 			st.setInt(1, id);
 
 			st.executeUpdate();
-			System.out.println("Update worked");
+//			System.out.println("Update worked");
 
 		} catch (SQLException e) {
 			throw new DbException("Error: " + e.getMessage());
