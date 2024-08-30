@@ -2,8 +2,7 @@ package application;
 
 import model.dao.DaoFactory;
 import model.dao.impl.ParkingSlotDaoJBDC;
-import model.dao.impl.RegisteredDaoJBDC;
-import model.dao.impl.VehicleDaoJBDC;
+import model.entities.MonthlySubscriber;
 import model.entities.Vehicle;
 
 public class App2 {
@@ -11,8 +10,21 @@ public class App2 {
 	public static void main(String[] args) {
 		
 		//Para iniciar as vagas
-		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDao();
-		slot.createTable();
+		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
+//		slot.createTable();
+		
+		int valor = 1;
+		
+		Vehicle vehicle = new MonthlySubscriber("123"); 
+		
+		MonthlySubscriber sub = new MonthlySubscriber("123");
+		//
+		if(vehicle instanceof MonthlySubscriber) {
+			System.out.println("Sim");
+		} else {
+			System.out.println("Não");
+		}
+		
 //		slot.findByOccupied(true);
 //		slot.freeSlot(1);
 //		slot.occupieSlot(10, 40);

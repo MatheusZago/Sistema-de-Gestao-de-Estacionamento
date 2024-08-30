@@ -10,6 +10,7 @@ public class DeliveryTruck extends Vehicle implements RegisteredVehicle{
 
 	public DeliveryTruck(String plate, VehicleCategory category) {
 		super(plate, category);
+		System.out.println("Construtor Caminhão");
 		super.setSize(4);
 	}
 	

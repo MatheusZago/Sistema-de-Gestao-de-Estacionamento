@@ -9,6 +9,7 @@ import db.DbException;
 import model.dao.VehicleDao;
 import model.entities.DeliveryTruck;
 import model.entities.MonthlySubscriber;
+import model.entities.PublicService;
 import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
@@ -64,6 +65,9 @@ public class VehicleDaoJBDC implements VehicleDao {
 				if (returnedCategory == VehicleCategory.TRUCK) {
 					registered = new DeliveryTruck(id, returnedPlate, returnedCategory);
 					return registered;
+				} else if(returnedCategory == VehicleCategory.PUBLIC) {
+					registered = new PublicService(id, returnedPlate, returnedCategory);
+					return registered;
 				} else if (returnedCategory == VehicleCategory.CAR || returnedCategory == VehicleCategory.MOTORCYCLE) {
 					registered = new MonthlySubscriber(id, returnedPlate, returnedCategory);
 					return registered;
@@ -81,6 +85,8 @@ public class VehicleDaoJBDC implements VehicleDao {
 	}
 
 	public void deleteVehicle(int id) {
+		System.out.println("id: " + id);
+		
 		try {
 			st = conn.prepareStatement("DELETE FROM vehicles WHERE id = ?;");
 			st.setInt(1, id);

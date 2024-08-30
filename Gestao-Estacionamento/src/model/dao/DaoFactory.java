@@ -14,11 +14,11 @@ public class DaoFactory {
 		return new VehicleDaoJBDC(DB.getConnection());
 	}
 
-	public static RegisteredDaoJBDC createRegisteredDao() {
+	public static RegisteredDaoJBDC createRegisteredDaoJBDC() {
 		return new RegisteredDaoJBDC(DB.getConnection());
 	}
 
-	public static ParkingSlotDaoJBDC createParkingSlotDao() {
+	public static ParkingSlotDaoJBDC createParkingSlotDaoJBDC() {
 		return new ParkingSlotDaoJBDC(DB.getConnection());
 	}
 

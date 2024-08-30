@@ -97,12 +97,11 @@ public static int validateExitBarriers(Vehicle vehicle) {
 			throw new IllegalArgumentException("Unexpected value: " + category);
 		}
 		
-		System.out.println();
-		System.out.println("CHOOSE A BARRIER TO LEAVE THROUGH ");
 		
 		do {
-			System.out.println("A " + category + " can entry on the following barriers: " + options );
-			System.out.println("CHOOSE A BARRIER TO ENTER THROUGH ");
+			System.out.println();
+			System.out.println("A " + category + " can leave through the following barriers: " + options );
+			System.out.println("Choose a barrier to leave through.");
 			
 			try {
 				choice = sc.nextInt();
@@ -118,7 +117,7 @@ public static int validateExitBarriers(Vehicle vehicle) {
 				}
 				
 				if (validOption) {
-					System.out.println("Passed through the barrier " + choice);
+					System.out.println("Left through the barrier " + choice);
 				} else {
 					System.out.println("Choose an adequead barrier for " + category);
 				}
@@ -128,8 +127,6 @@ public static int validateExitBarriers(Vehicle vehicle) {
 			}
 						
 		} while (validOption == false);
-		
-		System.out.println("Left through barrier " + choice);
 		
 		return choice;
 		

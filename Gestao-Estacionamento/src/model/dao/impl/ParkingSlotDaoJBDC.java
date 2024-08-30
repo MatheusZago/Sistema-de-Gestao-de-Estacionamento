@@ -106,7 +106,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		try {
 
 			st = conn.prepareStatement(
-					"SELECT id, type, occupied FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
+					"SELECT * FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
 
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();

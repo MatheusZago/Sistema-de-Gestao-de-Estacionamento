@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import db.DbException;
+import model.dao.DaoFactory;
 import model.dao.RegisteredDao;
 import model.entities.DeliveryTruck;
 import model.entities.MonthlySubscriber;
@@ -81,6 +82,18 @@ public class RegisteredDaoJBDC implements RegisteredDao {
 		}
 
 		return null;
+	}
+	
+	public boolean isRegistered(String plate) {
+		Vehicle vehicle = DaoFactory.createRegisteredDaoJBDC().FindRegisteredByPlate(plate);
+		
+		if(vehicle != null) {
+			return true;
+		} else {
+			return false;
+		}
+		
+		
 	}
 
 }

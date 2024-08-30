@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import model.dao.impl.TicketDaoJBDC;
 import model.enums.VehicleCategory;
-import model.services.BarrierService;
 
 //Classe para representar os veiculos avulsos, não cadastrados.
 public class IndividualVehicle extends Vehicle {
@@ -14,6 +13,7 @@ public class IndividualVehicle extends Vehicle {
 	// Ppegando construtor da classe abstrata
 	public IndividualVehicle( String plate, VehicleCategory category) {
 		super( plate, category);
+		System.out.println("Construtor Avulso");
 		
 		if (super.getCategory() == VehicleCategory.CAR) {
 			super.setSize(2);
@@ -34,12 +34,16 @@ public class IndividualVehicle extends Vehicle {
 
 	@Override
 	public void enter(Vehicle vehicle, LocalDateTime dateTime) {
-		System.out.println("Enter by the barriers: ");
-		int entryBarrier = BarrierService.validateEntryBarriers(vehicle);
+		
+//		System.out.println();
+//		System.out.println("Enter by the barriers: ");
+//		int entryBarrier = BarrierService.validateEntryBarriers(vehicle);
 
 		// Ele já colocou a vaga
 		super.enter(vehicle, dateTime);
 
+		System.out.println("Chamou o enter do avulso");
+		
 //		ParkedDaoJBDC parkedDao = DaoFactory.createParkedDaoJBDC();
 //		List<Integer> chosenSlot = parkedDao.findSlotByPlate(getPlate());
 		
@@ -57,21 +61,18 @@ public class IndividualVehicle extends Vehicle {
         
 		}
 
-	public void exit(Vehicle vehicle , LocalDateTime time) {
-
-		System.out.println("Leaving by the barrier: ");
-		int exitBarrier = BarrierService.validateExitBarriers(vehicle);
-
-		if (vehicle.getCategory() != VehicleCategory.PUBLIC) {
-			slot.freeSlot(vehicle.getId());
-//			vehicle.de
-//			parked.remove(vehicle);
-
-		}
+//	public void exit(Vehicle vehicle , LocalDateTime time) {
+//
+//		System.out.println("Leaving by the barrier: ");
+//		int exitBarrier = BarrierService.validateExitBarriers(vehicle);
+//
+//		if (vehicle.getCategory() != VehicleCategory.PUBLIC) {
+//			slot.freeSlot(vehicle.getId());
+////			vehicle.de
+////			parked.remove(vehicle);
+//
+//		}
 		
 //		ticketDao.updateTicket();
-		
-		
-
-	}
+//	}
 }

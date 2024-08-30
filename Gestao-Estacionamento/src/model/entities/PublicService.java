@@ -9,6 +9,7 @@ public class PublicService extends Vehicle {
 
 	public PublicService(String plate, VehicleCategory category) {
 		super(plate, category);
+		System.out.println("Construtor Publico");
 		super.setSize(0);
 	}
 	

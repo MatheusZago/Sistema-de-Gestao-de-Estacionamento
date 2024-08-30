@@ -7,7 +7,7 @@ public interface RegisteredVehicle {
 	
 	//Dps vê se é possível
 	public default void register(Vehicle vehicle) {
-		DaoFactory.createRegisteredDao().insert(vehicle);
+		DaoFactory.createRegisteredDaoJBDC().insert(vehicle);
 	}
 	
 	
