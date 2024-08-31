@@ -55,11 +55,18 @@ public class Register {
 	}
 
 	public String printRegisterEntry() {
-		return "Register id:" + id + ", dateOfEntry: " + dateOfEntry +  ", id_vehicle: " + id_vehicle;
+		return "-----------------------------"
+				+ "Register id:" + id +  ", id_vehicle: " + id_vehicle
+				+ "\n dateOfEntry: " + dateOfEntry 
+				+"-----------------------------";
 	}
 	
 	public String printRegisterExit() {
-		return "Register id:" + id + ", date of entry: " + dateOfEntry + ", date of exit: " + dateOfExit +", id_vehicle: " + id_vehicle;
+		return "-----------------------------"
+				+ "\nRegister id:" + id +   ", id_vehicle: " + id_vehicle 
+				+ "\ndate of entry: " + dateOfEntry 
+				+ "\ndate of exit: " + dateOfExit 
+				+ "\n-----------------------------";
 	}
 
 }

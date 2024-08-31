@@ -12,9 +12,11 @@ public interface EnrolleedVehicle {
 		DaoFactory.createEnrolleesDaoJBDC().insert(vehicle);
 	}
 
-	void enter(Vehicle vehicle, Timestamp dateTime);
+	void enter(Vehicle vehicle, Timestamp entryTimeStamp);
 
 	double charge(int vehicleId);
+
+	void exit(Vehicle vehicle, Timestamp exitTimeStamp);
 	
 	
 }

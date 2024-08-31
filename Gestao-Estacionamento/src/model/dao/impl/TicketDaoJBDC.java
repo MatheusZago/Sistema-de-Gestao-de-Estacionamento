@@ -61,14 +61,47 @@ public class TicketDaoJBDC implements TicketDao {
 	}
 
 	public Ticket findEntryTicketByVehicleId(int vehicleId) {
-		
+
 		int id = 0;
 		int vehicleIdReturned = 0;
 		String plate = null;
 		Timestamp timeOfEntry = null;
 		int entryBarrier = 0;
 		String slotNumber = null;
-		
+
+		try {
+			st = conn.prepareStatement("SELECT * FROM tickets WHERE vehicleId = ?");
+			st.setInt(1, vehicleId);
+
+			rs = st.executeQuery();
+
+			if (rs.next()) {
+				id = rs.getInt("id");
+				vehicleIdReturned = rs.getInt("vehicleId");
+				plate = rs.getString("plate");
+				timeOfEntry = rs.getTimestamp("entryTime");
+				entryBarrier = rs.getInt("entryBarrier");
+				slotNumber = rs.getString("slotNumber");
+			}
+
+			return new Ticket(id, vehicleIdReturned, plate, timeOfEntry, entryBarrier, slotNumber);
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+
+	}
+	
+	public Ticket findExitTicketByVehicleId(int vehicleId) {
+		int id = 0;
+		int vehicleIdReturned = 0;
+		String plate = null;
+		Timestamp timeOfEntry = null;
+		Timestamp timeOfExit = null;
+		int entryBarrier = 0;
+		int exitBarrier = 0;
+		String slotNumber = null;
+		double amountDue = 0.0;
 		
 		try {
 			st = conn.prepareStatement("SELECT * FROM tickets WHERE vehicleId = ?");
@@ -81,18 +114,20 @@ public class TicketDaoJBDC implements TicketDao {
 				vehicleIdReturned = rs.getInt("vehicleId");
 				plate = rs.getString("plate");
 				timeOfEntry = rs.getTimestamp("entryTime");
+				timeOfExit = rs.getTimestamp("exitTime");
 				entryBarrier = rs.getInt("entryBarrier");
+				exitBarrier = rs.getInt("exitBarrier");
 				slotNumber = rs.getString("slotNumber");
-			}
+				amountDue = rs.getDouble("amountDue");
+			}		
 			
-			
-			return new Ticket(id, vehicleIdReturned, plate, timeOfEntry, entryBarrier, slotNumber);			
+			return new Ticket(id, vehicleIdReturned, plate, 
+					timeOfEntry, timeOfExit, entryBarrier, exitBarrier, slotNumber, amountDue);
 			
 		}catch (SQLException e) {
 			throw new DbException(e.getMessage());
 		}
 		
-
 	}
 
 }

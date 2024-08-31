@@ -12,6 +12,6 @@ CREATE TABLE tickets (
     amountDue DECIMAL(10, 2) -- Isso faz com que seja decimal
 );
 
- DROP TABLE tickets;
+ -- DROP TABLE tickets;
 
 SELECT * FROM tickets;

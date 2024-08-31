@@ -6,8 +6,8 @@ CREATE TABLE vehicles (
     category ENUM('CAR', 'MOTORCYCLE', 'TRUCK', 'PUBLIC') NOT NULL
 );
 
-RENAME TABLE vehicle TO vehicles;
+-- DROP TABLE vehicles;
 
 SELECT * FROM vehicles;
 
-DELETE FROM vehicles WHERE plate = 'OBA321';
+DELETE FROM vehicles WHERE plate = 'INDI123';

@@ -10,7 +10,7 @@ CREATE TABLE parking_slots (
 );
 
 
-  DROP TABLE parking_slots;
+--  DROP TABLE parking_slots;
 SELECT * FROM parking_slots;
 
 UPDATE parking_slots SET occupied = TRUE WHERE id IN  (60, 49, 21);

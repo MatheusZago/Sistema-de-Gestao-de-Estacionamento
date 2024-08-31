@@ -3,15 +3,11 @@ package model.entities;
 import java.sql.Timestamp;
 import java.util.Scanner;
 
-import model.dao.DaoFactory;
-import model.dao.RegistersDao;
 import model.enums.VehicleCategory;
-import model.services.BarrierService;
 
 //Classe para representar os mensalistas, que implmeneta veiculos e herda de Veiculos Cadastrados
 public class MonthlySubscriber extends Vehicle implements EnrolleedVehicle {
 
-	RegistersDao register = DaoFactory.createRegisterDaoJBDC();
 	Scanner sc = new Scanner(System.in);
 
 	public MonthlySubscriber(String plate) {
@@ -44,12 +40,9 @@ public class MonthlySubscriber extends Vehicle implements EnrolleedVehicle {
 
 	@Override
 	public void enter(Vehicle vehicle, Timestamp dateTime) {
-		// Chamou a catraca, não precisa retornar ela pq o monthly nn usa
-//		BarrierService.validateEntryBarriers(vehicle);
-		// Chamou o processo de entrada
 		super.enter(vehicle, dateTime);
 
-		register.insert(dateTime, vehicle.getId());
+		accessRegister.insert(dateTime, vehicle.getId());
 
 		System.out.println("Chamou o da Monthly Subscriber Vehicle");
 
@@ -57,13 +50,16 @@ public class MonthlySubscriber extends Vehicle implements EnrolleedVehicle {
 
 	@Override
 	public void exit(Vehicle vehicle, Timestamp time) {
-
-		BarrierService.validateExitBarriers(vehicle);
 		super.exit(vehicle, time);
-		System.out.println(vehicle.getId());
-		register.update(time, vehicle.getId());
-
-		System.out.println("Chamou o exit do montly subscriber");
+		String formattedAmountDue = String.format("%.2f", charge(vehicle.getId()));
+		
+		
+		accessRegister.update(time, vehicle.getId());
+		
+		Register register = accessRegister.findRegisterByVehicleId(vehicle.getId());
+		System.out.println("Here is the register of the visit: ");
+		System.out.println(register.printRegisterExit()); 
+		System.out.println("Free of charge because of monthly subscribed plan worth: R$" + formattedAmountDue);
 
 	}
 

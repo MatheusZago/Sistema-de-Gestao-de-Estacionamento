@@ -6,6 +6,7 @@ import java.util.Scanner;
 import model.dao.DaoFactory;
 import model.dao.EnrolleesDao;
 import model.dao.impl.ParkingSlotDaoJBDC;
+import model.dao.impl.RegistersDaoJBDC;
 import model.dao.impl.VehicleDaoJBDC;
 import model.enums.VehicleCategory;
 import model.services.BarrierService;
@@ -13,9 +14,11 @@ import model.services.BarrierService;
 //Interface de Veiculos, que será implmenetada por tdos os veiculos
 public abstract class Vehicle {
 	
-	VehicleDaoJBDC vehicleDao = DaoFactory.createVehicleDaoJBDC();
-	EnrolleesDao registeredDao = DaoFactory.createEnrolleesDaoJBDC();
-	ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
+	static VehicleDaoJBDC accessVehicle = DaoFactory.createVehicleDaoJBDC();
+	static EnrolleesDao accessEnrollees = DaoFactory.createEnrolleesDaoJBDC();
+	static ParkingSlotDaoJBDC accessParkingSlot = DaoFactory.createParkingSlotDaoJBDC();
+	static RegistersDaoJBDC accessRegister = DaoFactory.createRegisterDaoJBDC();
+	
 
 	static Scanner sc = new Scanner(System.in);
 
@@ -104,7 +107,7 @@ public abstract class Vehicle {
 	}
 
 	public static Vehicle InstantiateVehicleForEntry(String plate) {
-		Vehicle vehicle = DaoFactory.createEnrolleesDaoJBDC().FindEnrolleesByPlate(plate);
+		Vehicle vehicle = accessEnrollees.FindEnrolleesByPlate(plate);
 
 		if (vehicle != null) {
 
@@ -135,7 +138,7 @@ public abstract class Vehicle {
 	}
 	
 	public static Vehicle instantiateVehicleforExit(String plate ) {
-		Vehicle vehicle = DaoFactory.createVehicleDaoJBDC().findVehicleByPlate(plate);
+		Vehicle vehicle = accessVehicle.findVehicleByPlate(plate);
 		boolean isRegistered = DaoFactory.createEnrolleesDaoJBDC().isEnrolleed(plate);
 		
 		if(isRegistered == true) {
@@ -170,9 +173,9 @@ public abstract class Vehicle {
 			System.out.println("Available slots: ");
 
 			if (vehicle instanceof MonthlySubscriber) {
-				slot.findByOccupied(false);
+				accessParkingSlot.findByOccupied(false);
 			} else {
-				slot.findByOccupiedGeneral(false);
+				accessParkingSlot.findByOccupiedGeneral(false);
 			}
 
 			//ESCOLHER VAGA();
@@ -184,7 +187,7 @@ public abstract class Vehicle {
 				choice = sc.nextInt();
 				
 				choices[i] = choice;
-				slot.occupieSlot(choice, vehicle.getId());
+				accessParkingSlot.occupieSlot(choice, vehicle.getId());
 
 			}
 			System.out.println("Slots occupied worked!");
@@ -198,25 +201,12 @@ public abstract class Vehicle {
 		System.out.println("Leaving by the barrier: ");
 		exitBarrier = BarrierService.validateExitBarriers(vehicle);
 		
-//		if(vehicle instanceof IndividualVehicle) {
-//			System.out.println("Avulso");
-//		} else if(vehicle instanceof DeliveryTruck) {
-//			System.out.println("Truck");
-//		} else if(vehicle instanceof PublicService) {
-//			System.out.println("Public");
-//		} else if(vehicle instanceof MonthlySubscriber) {
-//			System.out.println("Mensalista");
-//		}
-		
-//		System.out.println();
-//		BarrierService.validateExitBarriers(vehicle);
-
 		//Se ele não for publico ele libera uma vaga, já que os públicos não ocupam
 		if (vehicle.getCategory() != VehicleCategory.PUBLIC) {
-			slot.freeSlot(vehicle.getId());
+			accessParkingSlot.freeSlot(vehicle.getId());
 		} 
 		
-		vehicleDao.deleteVehicle(vehicle.getId());
+		accessVehicle.deleteVehicle(vehicle.getId());
 
 	}
 	

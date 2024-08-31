@@ -113,16 +113,22 @@ public class Ticket {
 	}
 
 	public String printTicketEntry() {
-		return "Ticket: " + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
+		return  "-----------------------------"
+				+ "Ticket: " + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
 				+ "\n" + "Entered at: " + entryTime + " Through barrier: " + entryBarrier
-				+ "\n" + "Parked at: " + slotNumber;
+				+ "\n" + "Parked at: " + slotNumber 
+				+ "\n-----------------------------";
 	}
 
 	public String printTicketExit() {
-		return "Ticket:" + id + " plate: " + plate +  " id vehicle: " + vehicleId  
-				+ "\n" + "Entered: " + entryTime + " Through barrier: "
-				+ entryBarrier + "Left " + exitTime + " Thought barrier: " + exitBarrier + "Parked at: " + slotNumber
-				+ " value: " + amountDue;
+		
+		String formattedAmountDue = String.format("%.2f", amountDue);
+		return "-----------------------------"
+				+ "Ticket:" + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
+				+ "\n" + "Entered: " + entryTime + " Through barrier: "+ entryBarrier 
+				+ "\nLeft " + exitTime + " Thought barrier: " + exitBarrier 
+				+ "\nParked at: " + slotNumber+ " value: R$" + formattedAmountDue
+				+ "\n-----------------------------";
 	}
 
 }

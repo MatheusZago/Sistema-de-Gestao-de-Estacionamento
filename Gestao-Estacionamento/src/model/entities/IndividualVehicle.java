@@ -39,7 +39,6 @@ public class IndividualVehicle extends Vehicle {
 	public void enter(Vehicle vehicle, Timestamp dateTime) {
 		
 		String numberValue;
-//		int entryBarrier = BarrierService.validateEntryBarriers(vehicle);
 		// Ele já colocou a vaga
 		super.enter(vehicle, dateTime);
 		int entryBarrier = super.getEntryBarrier();
@@ -64,15 +63,13 @@ public class IndividualVehicle extends Vehicle {
 	
 	@Override
 	public void exit(Vehicle vehicle ,  Timestamp exitTimeStamp) {
-//		System.out.println("Leaving by the barrier: ");
-//		int exitBarrier = BarrierService.validateExitBarriers(vehicle);		
-		super.exit(vehicle, exitTimeStamp);
+			super.exit(vehicle, exitTimeStamp);
 		int exitBarrier = super.getExitBarrier();
 		
-		//FAZER A LÓGICA DA CONTA
 		double charge = charge(vehicle.getId(), exitTimeStamp);
-		
 		ticketDao.updateTicket(exitTimeStamp, exitBarrier, charge, vehicle.getId());;
+		Ticket ticket = ticketDao.findExitTicketByVehicleId(vehicle.getId());
+		System.out.println(ticket.printTicketExit());
 	}
 
 
