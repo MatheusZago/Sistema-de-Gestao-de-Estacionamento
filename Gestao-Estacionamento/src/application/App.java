@@ -1,71 +1,165 @@
 package application;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import model.dao.DaoFactory;
-import model.entities.CaminhaoEntrega;
-import model.entities.Mensalista;
-import model.entities.VeiculoCadastrado;
-import model.enums.TipoVeiculo;
+import model.dao.impl.VehicleDaoJBDC;
+import model.entities.DeliveryTruck;
+import model.entities.MonthlySubscriber;
+import model.entities.Vehicle;
+import model.enums.VehicleCategory;
 
 //Classe principal da aplicação
 public class App {
 
 	public static void main(String[] args) {
 
+		VehicleDaoJBDC newVehicle = DaoFactory.createVehicleDaoJBDC();
+//		RegisteredDao newRegistered = DaoFactory.createRegisteredDao();
 		Scanner sc = new Scanner(System.in);
-		boolean teste = true;
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+		boolean test = true;
 
 		try {
 
-			//Foi usado do while para que o programa execute pelo menos uma vez.
+			// Foi usado do while para que o programa execute pelo menos uma vez.
 			do {
 				{
-					System.out.println("=====ESCOLHA OPÇÃO=====");
-					System.out.println("1) Registrar entrada");
-					System.out.println("2) Registrar saida");
-					System.out.println("3) Cadastrar veiculo");
-					System.out.println("4) Sair");
+					System.out.println("=====CHOOSE AN OPTION=====");
+					System.out.println("1) Register entrance");
+					System.out.println("2) Register exit");
+					System.out.println("3) Register Vehicle");
+					System.out.println("4) Exit");
 
-					int escolha = sc.nextInt();
+					int choice = sc.nextInt();
 
-					switch (escolha) {
-					case 1: {
-						System.out.println("Vamos registrar sua entrada!");
+					switch (choice) {
+					case 1: { // IMPEDIR PLACAS DUPLICADAS
+						try {
+							// Passo 1, construir o carro que quer entrar (FEITO)
+							System.out.println();
+							System.out.println("Let's register your entrance!");
+							System.out.print("Enter the plate number: ");
+							String plate = sc.next().toUpperCase();
+							
+							// 2 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO:
+							// Cria-lo se estiver cadastrado
+							Vehicle vehicle = Vehicle.InstantiateVehicleForEntry(plate);
+							
+
+
+							// Inserindo o novo veiculo na base de dados para que ele seja considerado
+//							// dentro do estacionamento
+							newVehicle.insert(vehicle);
+							
+//
+//							// Ele ta fazendo isso só pra epgar o objeto completo do banco de dados,
+//							// incluindo o ID que foi gerado
+							Vehicle idRetrieve = newVehicle.findVehicleByPlate(vehicle.getPlate());
+							vehicle.setId(idRetrieve.getId());
+//
+//							// Está pegando a data e usando o formater pra deixar da forma certa
+							System.out.println("Enter the date for your arrival (dd/MM/yyyy HH:mm)");
+							sc.nextLine();
+							String dateTimeInput = sc.nextLine();
+
+							LocalDateTime arriveDateTime;
+							try {
+								arriveDateTime = LocalDateTime.parse(dateTimeInput, dtf);
+							} catch (DateTimeParseException e) {
+								System.out.println("Invalid date format. Please use the format dd/MM/yyyy HH:mm");
+								return;
+							}
+
+							//Transformando o date time padronizado em timeStamp
+							Instant instant = arriveDateTime.atZone(ZoneId.systemDefault()).toInstant();
+							Timestamp arriveTimeStamp = Timestamp.from(instant);
+							
+
+							vehicle.enter(vehicle, arriveTimeStamp);
+
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
 						break;
 					}
 					case 2: {
-						System.out.println("Vamos registrar sua saida!");
+
+						System.out.println();
+						System.out.println("Let's register your exit!");
+						System.out.print("Enter the plate number: ");
+						String plate = sc.next().toUpperCase();
+						System.out.println();
+
+						
+						
+						
+						System.out.println("Enter the date for your exit (dd/MM/yyyy HH:mm)");
+						sc.nextLine();
+						String dateTimeInput = sc.nextLine();
+
+						LocalDateTime leaveDateTime;
+						try {
+							leaveDateTime = LocalDateTime.parse(dateTimeInput, dtf);
+						} catch (DateTimeParseException e) {
+							System.out.println("Invalid date format. Please use the format dd/MM/yyyy HH:mm");
+							return;
+						}
+						
+						//Transformando o date time padronizado em timeStamp
+						Instant instant = leaveDateTime.atZone(ZoneId.systemDefault()).toInstant();
+						Timestamp exitTimeStamp = Timestamp.from(instant);
+						
+						Vehicle vehicle = Vehicle.instantiateVehicleforExit(plate);
+						
+						vehicle.exit(vehicle, exitTimeStamp);
+
 						break;
 					}
-					case 3: {
-						// AQUI TEM QUE CHMAR A FUNÇÃO QUE CADASTRA
-						DaoFactory.criarVeiculoDao();
-						System.out.print("Digite a placa do veiculo: ");
-						String placa = sc.next();
-						System.out.print("Categoria (CARRO, MOTO, CAMINHAO, PUBLICO): ");
-						String tipo = sc.next().toUpperCase();
-						TipoVeiculo modelo = TipoVeiculo.valueOf(tipo);
+					case 3: {// BASICAMENTE FEITO, APENAS MELHORIAS E BUGS
 
-						// Ta criando um objeto veiculo cadastrado
-						VeiculoCadastrado cadastrado;
+						// Aqu está puxando o cridor de veiculos do BD
+						System.out.println("Let's register your vehicle!");
 
-						if (modelo == TipoVeiculo.CAMINHAO) {
-							cadastrado = new CaminhaoEntrega(placa, modelo);
+						System.out.print("Enter vehicle plate: ");
+						String plate = sc.next().toUpperCase();
+						// TODO, dar um erro para evitar placas repetidas sem quebrar o programa.
+						System.out.print("Category (CAR, MOTORCYCLE, TRUCK): ");
+						String type = sc.next().toUpperCase();
+						VehicleCategory model = VehicleCategory.valueOf(type);
+ 
+						Vehicle registered; 
+
+						// Vai criar um veiculo especifio de acordo com o tipo dele, sendo caminhao ou
+						// avulso (carro ou moto)
+						if (model == VehicleCategory.TRUCK) {
+							registered = new DeliveryTruck(plate, model);
+							((DeliveryTruck) registered).register(registered); // Ta especificando qual é.
+						} else if (model == VehicleCategory.CAR || model == VehicleCategory.MOTORCYCLE) {
+							registered = new MonthlySubscriber(plate, model);
+							((MonthlySubscriber) registered).register(registered); // Ta especificando qual é
 						} else {
-							cadastrado = new Mensalista(placa, modelo);
+							// TODO ajeitar para usar um erro
+//							newRegistered = null;
+							System.out.println("Invalid vehicle, try again.");
 						}
-
-						cadastrado.cadastrar(cadastrado);
 
 						break;
 					}
 					case 4: {
-						System.out.println("Obrigado por usar o sistema!");
-						teste = false;
+						System.out.println("Thank you for using the system!");
+						test = false;
+						break;
 					}
 					default:
-						throw new IllegalArgumentException("Unexpected value: " + escolha);
+						throw new IllegalArgumentException("Unexpected value: " + choice);
 					}
 
 					// Apenas para pular linha
@@ -74,11 +168,13 @@ public class App {
 				}
 			}
 
-			while (teste);
+			while (test);
 
 		} catch (RuntimeException e) {
-			e.getStackTrace();
-		} finally {
+			e.printStackTrace();
+		}
+
+		finally {
 			sc.close();
 		}
 
