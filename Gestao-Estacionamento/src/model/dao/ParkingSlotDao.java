@@ -6,7 +6,8 @@ import java.util.List;
 
 import model.entities.ParkingSlot;
 
-//Interface para mostrar as implementação de ParkingSlot os métodos que tem de ter para mexer com a tabela
+//Interface used to keep the necessary methods for other types of DB connections
+//It is only used by JBDC in this project,
 public interface ParkingSlotDao {
 	
 	void createTable();
@@ -15,6 +16,8 @@ public interface ParkingSlotDao {
 	public List<ParkingSlot> findByOccupiedGeneral(Boolean occupied);
 	void freeSlot(int id);
 	void occupieSlot(int id, int vehicleId);
+	ParkingSlot findParkingSlotById(int id);
+	void fillSlots();
 	
 
 }

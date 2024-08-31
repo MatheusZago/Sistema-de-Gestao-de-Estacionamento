@@ -2,6 +2,7 @@ package model.entities;
 
 import java.sql.Timestamp;
 
+//Class to represent a Ticket
 public class Ticket {
 
 	private int id;
@@ -14,6 +15,7 @@ public class Ticket {
 	private String slotNumber;
 	private double amountDue;
 
+	//Multiple Constructors for multiple uses
 	public Ticket(int id, int vehicleId, String plate, Timestamp entryTime, int entryBarrier, String slotNumber) {
 		this.id = id;
 		this.vehicleId = vehicleId;
@@ -112,6 +114,7 @@ public class Ticket {
 		this.vehicleId = idVehicle;
 	}
 
+	//Different prints for different ticket forms
 	public String printTicketEntry() {
 		return  "-----------------------------"
 				+ "Ticket: " + id + " plate: " + plate +  " id-vehicle: " + vehicleId  

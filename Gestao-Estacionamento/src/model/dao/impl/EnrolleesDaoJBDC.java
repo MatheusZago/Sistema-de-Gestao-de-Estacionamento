@@ -13,19 +13,21 @@ import model.entities.MonthlySubscriber;
 import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
-//Usado para Implementar o acesso de dados comJBDC para Veiculos
+//Class made to implement its superclass and adjust its methods for the desired connection,
+//In this case being JBDC, this class is the Data Access Object of Enrolless
 public class EnrolleesDaoJBDC implements EnrolleesDao {
 
+	//Creating connection and sql statement and resultset
 	private Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
 
-	// Construtor pra pegar a conexão.
+	// Constructor to create a connection
 	public EnrolleesDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 
-	// Para inserir
+	//Method to insert a vehicle on the enroless table
 	@Override
 	public void insert(Vehicle vehicle) {
 		try {
@@ -44,7 +46,7 @@ public class EnrolleesDaoJBDC implements EnrolleesDao {
 
 	}
 
-	// USAR ISSO PRA VER SE EXISTE NA TABELA CADASTRADA
+	//Vehicle to find one instance of enrollees using it's plate
 	@Override
 	public Vehicle FindEnrolleesByPlate(String plate) {
 		try {
@@ -53,18 +55,17 @@ public class EnrolleesDaoJBDC implements EnrolleesDao {
 			st.setString(1, plate);
 			rs = st.executeQuery();
 
-			// Transformando o resultSet em objeto java
+			//This is transfoming a query consult in a java object
 			if (rs.next()) {
-
 				int returnedId = rs.getInt("id");
 				String returnedPlate = rs.getString("plate");
 				String stringCategory = rs.getString("category");
-//				//Transformando a String em Enum
+				//Transfoming String in enum
 				VehicleCategory returnedCategory = VehicleCategory.valueOf(stringCategory.toUpperCase());
 
 				Vehicle registered;
 
-				// De acordo com a categoria retornada ele devolve um objeto diferente
+				//It uses a diferent constructor according with the category 	
 				if (returnedCategory == VehicleCategory.TRUCK) {
 					registered = new DeliveryTruck(returnedId, returnedPlate, returnedCategory);
 					return registered;
@@ -84,6 +85,8 @@ public class EnrolleesDaoJBDC implements EnrolleesDao {
 		return null;
 	}
 	
+	//Simple method to see if a vehicle is enrolleed
+	@Override
 	public boolean isEnrolleed(String plate) {
 		Vehicle vehicle = DaoFactory.createEnrolleesDaoJBDC().FindEnrolleesByPlate(plate);
 		

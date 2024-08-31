@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 import model.dao.DaoFactory;
 
-//Classe abstrata para os Veiculos Cadastrados, implementa Veiculo e adiciona metos que todos terão.
+//Interface for EnrolledVehicle, for all the enrolledVehicles to be different and have the method register as default
 public interface EnrolleedVehicle {
 	
 	//Dps vê se é possível
@@ -13,9 +13,7 @@ public interface EnrolleedVehicle {
 	}
 
 	void enter(Vehicle vehicle, Timestamp entryTimeStamp);
-
 	double charge(int vehicleId);
-
 	void exit(Vehicle vehicle, Timestamp exitTimeStamp);
 	
 	

@@ -1,37 +1,15 @@
 package application;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
-import model.entities.IndividualVehicle;
-import model.enums.VehicleCategory;
+import model.dao.DaoFactory;
+import model.dao.impl.ParkingSlotDaoJBDC;
 
 public class App2 {
-	
+	//This method is used solely to create the ParkingSlot Table
 	public static void main(String[] args) {
 		
-		//Para iniciar as vagas
-//		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
-//		slot.createTable();
-//		
-		
-		IndividualVehicle vehicle = new IndividualVehicle(1, "OBA123", VehicleCategory.MOTORCYCLE);
-////		
-		LocalDateTime localDateTime = LocalDateTime.of(2024, 8, 30, 22, 0);
-		Timestamp timestamp = Timestamp.valueOf(localDateTime);
-		
-		System.out.println(vehicle.charge(20, timestamp));
-//		
-//		TicketDaoJBDC ticket = DaoFactory.createTicketDaoJBDC();
-//		Ticket ticketTeste =  ticket.findEntryTicketByVehicleId(20);
-//		
-//		
-//		
-//		System.out.println(ticketTeste.printTicketEntry());
-		
-		
-		
-		
+		//This method creates parkingSlot tables with all the slots free for use
+		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
+		slot.createTable();	
 	}
 
 }

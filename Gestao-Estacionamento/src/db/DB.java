@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+//Class made to create connection with Database
 public class DB {
-	//Classe para criar conexão com banco de dados e fechar essas conexões.
 	private static Connection conn = null;
 	
-	//Criando conexão com o banco de dados
+	//Constructor for a connection
 	public static Connection getConnection() {
 		if(conn == null) {
 			try {
@@ -28,7 +28,7 @@ public class DB {
 		return conn;
 	}
 	
-	//Para carregar as informações do db.properties
+	//It loads properties from the db.properties file to connector with a db
 	private static Properties loadProperties() {
 		try(FileInputStream fs = new FileInputStream("db.properties")) {
 			Properties props = new Properties();
@@ -39,7 +39,7 @@ public class DB {
 		}
 	}
 	
-	//Metodos usados para fechar conexões, são feitos aqui para que tenham try catch imbutido
+	//Bellow there are methods to close the connection, statement and the resultSet
 	public static void closeConnection() {
 		if(conn != null) {
 			try {

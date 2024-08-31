@@ -7,10 +7,9 @@ import model.dao.impl.EnrolleesDaoJBDC;
 import model.dao.impl.TicketDaoJBDC;
 import model.dao.impl.VehicleDaoJBDC;
 
+//Class used to centralize DAO object creating and grant access to method that acces the DB
 public class DaoFactory {
 
-	// A Fabrica Dao serve par criar conexões especificas, caso quisesse outra
-	// conexão fora JBDC seria aqui
 	public static VehicleDaoJBDC createVehicleDaoJBDC() {
 		return new VehicleDaoJBDC(DB.getConnection());
 	}

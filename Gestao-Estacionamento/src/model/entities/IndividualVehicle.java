@@ -9,12 +9,13 @@ import model.dao.DaoFactory;
 import model.dao.impl.TicketDaoJBDC;
 import model.enums.VehicleCategory;
 
-//Classe para representar os veiculos avulsos, não cadastrados.
+//Entity that represents a IndividualVehicle
 public class IndividualVehicle extends Vehicle {
 	
+	//Instantiate Ticket for use, it is the only one that uses tickets
 	TicketDaoJBDC ticketDao = DaoFactory.createTicketDaoJBDC();
 
-	// Ppegando construtor da classe abstrata
+	//Using 2 constructors for diferent momens
 	public IndividualVehicle( String plate, VehicleCategory category) {
 		super( plate, category);
 		
@@ -35,72 +36,75 @@ public class IndividualVehicle extends Vehicle {
 		}
 	}
 
+	//Override of method enter of superclass to add more
 	@Override
 	public void enter(Vehicle vehicle, Timestamp dateTime) {
 		
 		String numberValue;
-		// Ele já colocou a vaga
+		//Using the enter method from superclass and add the last parts
 		super.enter(vehicle, dateTime);
+		//Geting the entryBarrier from super for latter use
 		int entryBarrier = super.getEntryBarrier();
 		
-		//Aqui vai transformar em String para que possa concatenar as multiplas vagas
-		//Sendo ocupados por carros ou caminhões
+		//Transforming choices into string array to use on ticket, since it needs to have 2 different slots
 		int[] choices = getChoices();
 		if(choices.length == 1) {
 			numberValue = String.valueOf(choices);
 		} else {
-			//Caso tenha mais de um valor ele vai juntar todos para serem colocados no ticket
+			//In case it hs more than 1 number it creates a String unifying them
 			numberValue = Arrays.stream(choices)
 						.mapToObj(String::valueOf)
 						.collect(Collectors.joining(", "));
 		}
-		
+		//Creates a ticket
 		ticketDao.insert(vehicle.getId(), vehicle.getPlate(), dateTime, entryBarrier, numberValue);
-
-		System.out.println("Chamou o enter do avulso");
+//		System.out.println("Chamou o enter do avulso");
 		        
 		}
 	
+	//Override of exit method of superclass to add more
 	@Override
 	public void exit(Vehicle vehicle ,  Timestamp exitTimeStamp) {
-			super.exit(vehicle, exitTimeStamp);
+		//Using the enter method from superclass and add the last parts
+		super.exit(vehicle, exitTimeStamp);
+		//getting exitBarrier from super for latter use
 		int exitBarrier = super.getExitBarrier();
 		
+		//Formatting the carge method and using it to updateTicket and print it
 		double charge = charge(vehicle.getId(), exitTimeStamp);
+		//Updating Ticket
 		ticketDao.updateTicket(exitTimeStamp, exitBarrier, charge, vehicle.getId());;
+		//Creating a new ticket to receive the updated one
 		Ticket ticket = ticketDao.findExitTicketByVehicleId(vehicle.getId());
 		System.out.println(ticket.printTicketExit());
 	}
 
-
+	//Method to charge and return the value
 	public double charge(int vehicleId, Timestamp exitStamp) {
-		
+		//Variables for calculating the charge
 		double chargePerMin = 0.10;
 		double mininumCharge = 5.00;
-				
-		TicketDaoJBDC ticket = DaoFactory.createTicketDaoJBDC();
-		Ticket returnedTicket = ticket.findEntryTicketByVehicleId(vehicleId);
 		
+		//Instantiating ticket and returing 
+		Ticket returnedTicket = ticketDao.findEntryTicketByVehicleId(vehicleId);
+		
+		//Getting timestamps 
 		Timestamp dateOfEntry = returnedTicket.getEntryTime();
 		Timestamp dateOfExit = exitStamp;
 		
-        // Calcula a diferença em milissegundos
+        //Calculationg diference
         long millisecondsDifference = dateOfExit.getTime() - dateOfEntry.getTime();
-
-        // Converte a diferença para Duration
         Duration duration = Duration.ofMillis(millisecondsDifference);
 
-        // Obter a diferença em diferentes unidades
-//        long hours = duration.toHours();
+
+        //Transformation difference into minutes from milliseconds
         long minutes = duration.toMinutes();
-        
         double charge = minutes * chargePerMin;
         
-
+        //If the value is inferior to the minimumCharge it becomes a minimun charge
         if(charge < mininumCharge) {
         	charge = mininumCharge;
         } 
-        
 
 		return charge;
 	}

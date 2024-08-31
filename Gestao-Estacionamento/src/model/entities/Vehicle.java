@@ -11,15 +11,14 @@ import model.dao.impl.VehicleDaoJBDC;
 import model.enums.VehicleCategory;
 import model.services.BarrierService;
 
-//Interface de Veiculos, que será implmenetada por tdos os veiculos
+//Abstract class vehicle
 public abstract class Vehicle {
 	
+	//DAO static for use by the subclasses
 	static VehicleDaoJBDC accessVehicle = DaoFactory.createVehicleDaoJBDC();
 	static EnrolleesDao accessEnrollees = DaoFactory.createEnrolleesDaoJBDC();
 	static ParkingSlotDaoJBDC accessParkingSlot = DaoFactory.createParkingSlotDaoJBDC();
 	static RegistersDaoJBDC accessRegister = DaoFactory.createRegisterDaoJBDC();
-	
-
 	static Scanner sc = new Scanner(System.in);
 
 	private int id;
@@ -30,11 +29,11 @@ public abstract class Vehicle {
 	int exitBarrier;
 	int entryBarrier;
 	
-
+	//Multiple constructors for multiple cenarios
 	public Vehicle() {
 
 	}
-
+	
 	public Vehicle(String placa) {
 		this.plate = placa;
 	}
@@ -105,10 +104,11 @@ public abstract class Vehicle {
 	public void setEntryBarrier(int entryBarrier) {
 		this.entryBarrier = entryBarrier;
 	}
-
+	
+	//Instantiate method to create a vehicle
 	public static Vehicle InstantiateVehicleForEntry(String plate) {
 		Vehicle vehicle = accessEnrollees.FindEnrolleesByPlate(plate);
-
+		//if the vehicle is in the enrolleed table, it is enrolled then it is instantiated like this
 		if (vehicle != null) {
 
 			if (vehicle.getCategory() == VehicleCategory.TRUCK) {
@@ -121,8 +121,8 @@ public abstract class Vehicle {
 			
 			return vehicle;
 
-		} else {
-			
+		//If it ising enrolled it is created like this
+		} else {			
 			System.out.println("Vehicle not registered.");
 			System.out.print("Inform the vehicle category (CAR, MOTORCYCLE, PUBLIC): ");
 			String type = sc.next().toUpperCase();
@@ -137,6 +137,7 @@ public abstract class Vehicle {
 		
 	}
 	
+	//Instantiating vehicle 
 	public static Vehicle instantiateVehicleforExit(String plate ) {
 		Vehicle vehicle = accessVehicle.findVehicleByPlate(plate);
 		boolean isRegistered = DaoFactory.createEnrolleesDaoJBDC().isEnrolleed(plate);
@@ -161,15 +162,18 @@ public abstract class Vehicle {
 
 	}
 
+	//Default method enter, it is used as a base for the subclasses enter
 	public void enter(Vehicle vehicle, Timestamp arriveTimeStamp) {
 		
+		//Calling the entryBarrier service 
 		entryBarrier = BarrierService.validateEntryBarriers(vehicle);
 		this.choices = new int[vehicle.getSize()];
 
+		//If it is public it doenst occupie a slot
 		if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
 			System.out.println("Entered on a special parking slot, not counted on the 500.");
 		} else {
-
+			//If it in't it shows the slots and calls the functions
 			System.out.println("Available slots: ");
 
 			if (vehicle instanceof MonthlySubscriber) {
@@ -178,9 +182,7 @@ public abstract class Vehicle {
 				accessParkingSlot.findByOccupiedGeneral(false);
 			}
 
-			//ESCOLHER VAGA();
-			
-			// Tamanho precisa de vagas para o tamanho dele.
+			//Here it makesthe person choose slots accourding to the vehicle size
 			for (int i = 0; i < vehicle.size; i++) {
 				int choice = 0;
 				System.out.println("Escolha a vaga " + (i+1));
@@ -190,40 +192,38 @@ public abstract class Vehicle {
 				accessParkingSlot.occupieSlot(choice, vehicle.getId());
 
 			}
-			System.out.println("Slots occupied worked!");
+//			System.out.println("Slots occupied worked!");
 
 		}
 
 	}
 
+	//Exit method, it is used as a base for the subclasses
 	public void exit(Vehicle vehicle, Timestamp exitTimeStamp) {
-		
-		System.out.println("Leaving by the barrier: ");
+		//Calling exitBarrier service
 		exitBarrier = BarrierService.validateExitBarriers(vehicle);
 		
-		//Se ele não for publico ele libera uma vaga, já que os públicos não ocupam
+		//Public does not free a slot because it did not occupie one 
 		if (vehicle.getCategory() != VehicleCategory.PUBLIC) {
 			accessParkingSlot.freeSlot(vehicle.getId());
 		} 
-		
+		//They are all deleted to represent them leaving the parking slot
 		accessVehicle.deleteVehicle(vehicle.getId());
 
 	}
 	
-//	public abstract double charge(int vehicleId);
 
 	@Override
 	public String toString() {
 		return "id: " + id + " plate: " + plate + ", Category: " + category + ", size: " + size;
 	}
-//
-	public double charge(int vehicleId, Timestamp exitStamp) {
-		// TODO Auto-generated method stub
+
+	//Charge methods made only to be used;
+	public double  charge(int vehicleId, Timestamp exitStamp) {
 		return 0;
 	}
 
 	public double charge(int vehicleId) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
