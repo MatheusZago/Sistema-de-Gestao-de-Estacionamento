@@ -1,7 +1,10 @@
 package model.entities;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import model.dao.DaoFactory;
 import model.dao.EnrolleesDao;
@@ -163,40 +166,127 @@ public abstract class Vehicle {
 	}
 
 	//Default method enter, it is used as a base for the subclasses enter
+//	public void enter(Vehicle vehicle, Timestamp arriveTimeStamp) {
+//		
+//		//List to receive all the parking slots when the method is called bellow
+//		List<ParkingSlot> parkingSlotOptions;
+//		List<Integer> availableSlotIds = new ArrayList<>();
+//		
+//		//Calling the entryBarrier service 
+//		entryBarrier = BarrierService.validateEntryBarriers(vehicle);
+//		this.choices = new int[vehicle.getSize()];
+//
+//		//If it is public it doenst occupie a slot
+//		if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
+//			System.out.println("Entered on a special parking slot, not counted on the 500.");
+//		} else {
+//			//If it in't it shows the slots and calls the functions
+//			System.out.println("Available slots: ");
+//
+//			//If the vehicle is an instance of montlhy subscriber it will show all the slots
+//			//If not then it will show only the slots allowed for the general public
+//			if (vehicle instanceof MonthlySubscriber) {
+//				//The list receives the objects
+//				parkingSlotOptions = accessParkingSlot.findByOccupied(false);
+//			} else {
+//				parkingSlotOptions = accessParkingSlot.findByOccupiedGeneral(false);
+//			}
+//			
+//			parkingSlotOptions.forEach(System.out::println);
+//			
+//
+//			//Here it makesthe person choose slots accourding to the vehicle size
+////			for (int i = 0; i < vehicle.size; i++) {
+////				int choice = 0;
+////				System.out.println("Escolha a vaga " + (i+1));
+////				choice = sc.nextInt();
+////				
+////				choices[i] = choice;
+////				accessParkingSlot.occupieSlot(choice, vehicle.getId());
+//
+////			}
+////			System.out.println("Slots occupied worked!");
+//
+//			
+//			 // Here it makes the person choose slots according to the vehicle size
+//	        for (int i = 0; i < vehicle.getSize(); i++) {
+//	            int choice = 0;
+//	            boolean validChoice = false;
+//	            while (!validChoice) {
+//	                System.out.println("Escolha a vaga " + (i + 1));
+//	                choice = sc.nextInt();
+//	                
+//	                // Check if the choice is valid
+//	                if (availableSlotIds.contains(choice)) {
+//	                    validChoice = true;
+//	                    choices[i] = choice;
+//	                    accessParkingSlot.occupieSlot(choice, vehicle.getId());
+//	                } else {
+//	                    System.out.println("Escolha inválida. Por favor, escolha um número válido da lista.");
+//	                }
+//	            }
+//	        }
+//			
+//		}
+//
+//	}
+	
 	public void enter(Vehicle vehicle, Timestamp arriveTimeStamp) {
-		
-		//Calling the entryBarrier service 
-		entryBarrier = BarrierService.validateEntryBarriers(vehicle);
-		this.choices = new int[vehicle.getSize()];
+	    
+	    List<ParkingSlot> parkingSlotOptions;
+	    Set<Integer> availableSlotIds = new HashSet<>(); // Para armazenar IDs de slots disponíveis
 
-		//If it is public it doenst occupie a slot
-		if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
-			System.out.println("Entered on a special parking slot, not counted on the 500.");
-		} else {
-			//If it in't it shows the slots and calls the functions
-			System.out.println("Available slots: ");
+	    // Calling the entryBarrier service 
+	    entryBarrier = BarrierService.validateEntryBarriers(vehicle);
+	    this.choices = new int[vehicle.getSize()];
 
-			if (vehicle instanceof MonthlySubscriber) {
-				accessParkingSlot.findByOccupied(false);
-			} else {
-				accessParkingSlot.findByOccupiedGeneral(false);
-			}
+	    // If it is public it doesn’t occupy a slot
+	    if (vehicle.getCategory() == VehicleCategory.PUBLIC) {
+	        System.out.println("Entered on a special parking slot, not counted on the 500.");
+	    } else {
+	        // If it isn’t public, show the slots and call the functions
+	        System.out.println("Available slots: ");
 
-			//Here it makesthe person choose slots accourding to the vehicle size
-			for (int i = 0; i < vehicle.size; i++) {
-				int choice = 0;
-				System.out.println("Escolha a vaga " + (i+1));
-				choice = sc.nextInt();
-				
-				choices[i] = choice;
-				accessParkingSlot.occupieSlot(choice, vehicle.getId());
+	        // If the vehicle is an instance of monthly subscriber, show all slots
+	        // Otherwise, show only slots allowed for the general public
+	        if (vehicle instanceof MonthlySubscriber) {
+	            // The list receives the objects
+	            parkingSlotOptions = accessParkingSlot.findByOccupied(false);
+	        } else {
+	            parkingSlotOptions = accessParkingSlot.findByOccupiedGeneral(false);
+	        }
+	        
+	        // Print available slots and store their IDs
+	        parkingSlotOptions.forEach(slot -> {
+	            System.out.println(slot);
+	            availableSlotIds.add(slot.getId());
+	        });
 
-			}
-//			System.out.println("Slots occupied worked!");
+	        // Here it makes the person choose slots according to the vehicle size
+	        for (int i = 0; i < vehicle.getSize(); i++) {
+	            int choice = 0;
+	            boolean validChoice = false;
+	            while (!validChoice) {
+	                System.out.println("Choose the slot " + (i + 1));
+	                choice = sc.nextInt();
+	                
+	                // Check if the choice is valid
+	                if (availableSlotIds.contains(choice)) {
+	                    validChoice = true;
+	                    choices[i] = choice;
+	                    accessParkingSlot.occupieSlot(choice, vehicle.getId());
+	                } else {
+	                    System.out.println("Invalid choice, please select one from the list.");
+	                }
+	            }
+	        }
 
-		}
+	        // Optionally, you can add a confirmation message
+	        System.out.println("Slots occupied successfully!");
 
+	    }
 	}
+	
 
 	//Exit method, it is used as a base for the subclasses
 	public void exit(Vehicle vehicle, Timestamp exitTimeStamp) {

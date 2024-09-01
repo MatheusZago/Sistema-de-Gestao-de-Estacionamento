@@ -101,7 +101,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 			}
 			
 			//It prints every single availible slts
-			parkingSlots.forEach(System.out::println);
+//			parkingSlots.forEach(System.out::println);
 			return parkingSlots;
 
 		} catch (SQLException e) {
@@ -139,7 +139,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 				parkingSlots.add(slot);
 			}
 
-			parkingSlots.forEach(System.out::println);
+//			parkingSlots.forEach(System.out::println);
 			return parkingSlots;
 
 		} catch (SQLException e) {
