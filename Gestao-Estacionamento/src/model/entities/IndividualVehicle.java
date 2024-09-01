@@ -58,8 +58,9 @@ public class IndividualVehicle extends Vehicle {
 		}
 		//Creates a ticket
 		ticketDao.insert(vehicle.getId(), vehicle.getPlate(), dateTime, entryBarrier, numberValue);
-//		System.out.println("Chamou o enter do avulso");
-		        
+		System.out.println("Here is the ticket for your entry: ");
+		Ticket ticket = ticketDao.findEntryTicketByVehicleId(vehicle.getId());
+		System.out.println(ticket.printTicketEntry());        
 		}
 	
 	//Override of exit method of superclass to add more

@@ -24,7 +24,7 @@ public class DeliveryTruck extends Vehicle implements EnrolleedVehicle{
 		//Using the enter method from superclass and add the last parts
 		super.enter(vehicle, entryTimeStamp);
 		accessRegister.insert(entryTimeStamp, vehicle.getId());		
-		System.out.println("Chamou o do Caminhão Vehicle");
+//		System.out.println("Chamou o do Caminhão Vehicle");
 	}
 	
 	//Override of exit method of superclass to add more

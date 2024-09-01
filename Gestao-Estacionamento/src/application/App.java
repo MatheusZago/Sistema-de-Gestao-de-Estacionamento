@@ -78,6 +78,8 @@ public class App {
 							//This is calling the enter method of the vehicle, enter is a method mostly implemented
 							//But it has diferences depending on the subclass called (Public service, TRUCK etc)
 							vehicle.enter(vehicle, arriveTimeStamp);
+							
+							System.out.println("Parked with success!");
 
 						} catch (Exception e) {
 							e.printStackTrace();

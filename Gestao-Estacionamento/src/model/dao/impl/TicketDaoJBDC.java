@@ -27,6 +27,14 @@ public class TicketDaoJBDC implements TicketDao {
 	//Method to insert a ticket 
 	@Override
 	public void insert(int vehicleId, String plate, Timestamp entryTime, int entryBarrier, String numberValue) {
+		System.out.println("Numbers being used: ");
+		System.out.println("Vehicle id: " + vehicleId);
+		System.out.println("Plate: " + plate);
+		System.out.println("Time: " + entryTime);
+		System.out.println("Barrier: " + entryBarrier);
+		System.out.println("nSlots: " + numberValue);
+		
+		
 		try {
 			st = conn.prepareStatement("INSERT INTO tickets ("
 					+ "vehicleId, plate, entryTime, entryBarrier, slotNumber) " + "VALUES (?, ?, ?, ?, ?);");
@@ -36,8 +44,9 @@ public class TicketDaoJBDC implements TicketDao {
 			st.setInt(4, entryBarrier);
 			st.setString(5, numberValue);
 
+			
 			st.executeUpdate();
-			System.out.println("Insert de Ticket feito com sucesso.");
+//			System.out.println("Insert de Ticket feito com sucesso.");
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
