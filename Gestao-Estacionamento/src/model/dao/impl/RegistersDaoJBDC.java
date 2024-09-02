@@ -27,7 +27,6 @@ public class RegistersDaoJBDC implements RegistersDao{
 	//Method to insert register into the table
 	@Override
 	public void insert(Timestamp dateOfEntry, int vehicleId) {
-		System.out.println("Chamou o insert do register");
 		
 		try {
 			st = conn.prepareStatement("INSERT INTO registers (dateOfEntry, vehicleId)"
