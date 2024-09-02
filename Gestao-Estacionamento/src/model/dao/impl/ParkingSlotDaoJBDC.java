@@ -16,19 +16,21 @@ import model.enums.SlotType;
 //Class made to implement its superclass and adjust its methods for the desired connection,
 //In this case being JBDC, this class is the Data Access Object of ParkingSlots
 public class ParkingSlotDaoJBDC implements ParkingSlotDao {
-	//This class has a method to create and populate a table in the BD with all the parking slots
+	// This class has a method to create and populate a table in the BD with all the
+	// parking slots
 
-	//Creating connection 
+	// Creating connection
 	private Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
 
-	//Constructor with connection
+	// Constructor with connection
 	public ParkingSlotDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 
-	//Method to create parkingSlot table, it is used here since it is the most complicated table
+	// Method to create parkingSlot table, it is used here since it is the most
+	// complicated table
 	@Override
 	public void createTable() {
 		try {
@@ -36,9 +38,8 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 			if (doesTableExist(conn, "parking_slots") == false) {
 				String createTableSQL = "CREATE TABLE parking_slots (" + "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
 						+ "type ENUM('GENERAL', 'MONTHLY_SUBSCRIBER') NOT NULL, "
-						+ "occupied BOOLEAN NOT NULL DEFAULT FALSE, " 
-						+ "occupiedby INT NULL, "
-						+ "UNIQUE (id), " + "FOREIGN KEY (occupiedby) REFERENCES vehicles(id) " + ");";
+						+ "occupied BOOLEAN NOT NULL DEFAULT FALSE, " + "occupiedby INT NULL, " + "UNIQUE (id), "
+						+ "FOREIGN KEY (occupiedby) REFERENCES vehicles(id) " + ");";
 
 				try (PreparedStatement st = conn.prepareStatement(createTableSQL)) {
 					st.executeUpdate();
@@ -47,7 +48,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 					e.printStackTrace();
 					System.out.println("Error creating table.");
 				}
-				
+
 				fillSlots();
 
 			} else {
@@ -61,17 +62,17 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	}
 
-	//Simple method to verify if the table existis
+	// Simple method to verify if the table existis
 	@Override
 	public boolean doesTableExist(Connection conn, String tableName) throws SQLException {
 		DatabaseMetaData metaData = conn.getMetaData();
 		try (var rs = metaData.getTables(null, null, tableName, null)) {
-			return rs.next(); 
+			return rs.next();
 		}
 	}
 
-	//A method that returns all the slots according with the boolean parameter
-	//if occuppied = false the slot is free, if it is true then its occupied
+	// A method that returns all the slots according with the boolean parameter
+	// if occuppied = false the slot is free, if it is true then its occupied
 	@Override
 	public List<ParkingSlot> findByOccupied(Boolean occupied) {
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
@@ -89,18 +90,18 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 				int occupiedById = rs.getInt("occupiedby");
 
 				ParkingSlot slot;
-				
-				//OccupiedById can be null, if that is the case it creates like this
+
+				// OccupiedById can be null, if that is the case it creates like this
 				if (occupiedById != 0) {
 					slot = new ParkingSlot(id, slotType, isOccupied, occupiedById);
 				} else {
 					slot = new ParkingSlot(id, slotType, isOccupied, 0);
 				}
-				//Adding the slot generated in the list 
+				// Adding the slot generated in the list
 				parkingSlots.add(slot);
 			}
-			
-			//It prints every single availible slts
+
+			// It prints every single availible slts
 //			parkingSlots.forEach(System.out::println);
 			return parkingSlots;
 
@@ -110,15 +111,14 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	}
 
-	//Similar to findByOccupied, but this only returns if the type is GENERAL
-	//This is used when the vehicle is not a monthly subscriber
+	// Similar to findByOccupied, but this only returns if the type is GENERAL
+	// This is used when the vehicle is not a monthly subscriber
 	@Override
 	public List<ParkingSlot> findByOccupiedGeneral(Boolean occupied) {
 		List<ParkingSlot> parkingSlots = new ArrayList<>();
 		try {
 
-			st = conn.prepareStatement(
-					"SELECT * FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
+			st = conn.prepareStatement("SELECT * FROM parking_slots WHERE occupied = ? AND type = 'GENERAL';");
 
 			st.setBoolean(1, occupied);
 			rs = st.executeQuery();
@@ -146,10 +146,9 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 			throw new DbException("Error: " + e.getMessage());
 		}
 
-
 	}
 
-	//Method used to find a specif parking slot according to its id
+	// Method used to find a specif parking slot according to its id
 	@Override
 	public ParkingSlot findParkingSlotById(int id) {
 
@@ -182,7 +181,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 
 	}
 
-	//Method used to update a slot and make it occupied
+	// Method used to update a slot and make it occupied
 	@Override
 	public void occupieSlot(int id, int vehicleId) {
 		try {
@@ -198,7 +197,7 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		}
 	}
 
-	//Method used to update a slot and make it free
+	// Method used to update a slot and make it free
 	@Override
 	public void freeSlot(int id) {
 		try {
@@ -214,33 +213,48 @@ public class ParkingSlotDaoJBDC implements ParkingSlotDao {
 		}
 	}
 
-	//Method used to fill the slots on the recently created table
+	// Method used to fill the slots on the recently created table
 	@Override
 	public void fillSlots() {
 		try {
-			String insertSQL = "INSERT INTO parking_slots (type) VALUES (?)";
-
-			try (PreparedStatement st = conn.prepareStatement(insertSQL)) {
-				for (int i = 1; i <= 500; i++) {
-					if (i <= 300) {
-						st.setString(1, "GENERAL");
-					} else {
-						st.setString(1, "MONTHLY_SUBSCRIBER");
-					}
-					st.addBatch(); // this add a instruction to a queue 
+			st = conn.prepareStatement("INSERT INTO parking_slots (type) VALUES (?)");
+			for (int i = 1; i <= 500; i++) {
+				if (i <= 300) {
+					st.setString(1, "GENERAL");
+				} else {
+					st.setString(1, "MONTHLY_SUBSCRIBER");
 				}
-
-				st.executeBatch(); // Executes all the instructions on batch
-				System.out.println("Created 500 parking slots.");
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.out.println("Error inserting slots.");
+				st.addBatch(); // this add a instruction to a queue
 			}
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Error preparing statement.");
+			st.executeBatch(); // Executes all the instructions on batch
+			System.out.println("Created 500 parking slots.");
+
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
+
+	}
+	
+	public void fillAllSlots() {
+		try {
+			st = conn.prepareStatement("UPDATE parking_slots SET occupied = TRUE;");
+			
+			st.executeUpdate();
+			
+		}catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		}
+	}
+	
+	public void freeAllSlots() {
+		try {
+			st = conn.prepareStatement("UPDATE parking_slots SET occupied = FALSE;");
+			
+			st.executeUpdate();
+			
+		}catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
 		}
 	}
 }

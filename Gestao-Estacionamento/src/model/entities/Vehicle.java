@@ -218,7 +218,6 @@ public abstract class Vehicle {
 				}
 			}
 
-			// Optionally, you can add a confirmation message
 			System.out.println("Slots occupied successfully!");
 
 		}
