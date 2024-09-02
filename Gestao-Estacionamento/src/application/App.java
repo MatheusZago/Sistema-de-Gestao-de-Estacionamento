@@ -99,14 +99,15 @@ public class App {
 						System.out.println("Enter the date for your exit (dd/MM/yyyy HH:mm)");
 						sc.nextLine();
 						String dateTimeInput = sc.nextLine();
-
+						
 						LocalDateTime leaveDateTime;
+						
 						try {
 							leaveDateTime = LocalDateTime.parse(dateTimeInput, dtf);
 						} catch (DateTimeParseException e) {
 							System.out.println("Invalid date format. Please use the format dd/MM/yyyy HH:mm");
 							return;
-						}
+						} 
 						
 						//Again transformingo dateTime into Timestamp for DB use.
 						Instant instant = leaveDateTime.atZone(ZoneId.systemDefault()).toInstant();
@@ -114,6 +115,8 @@ public class App {
 						
 						//The vehicle is being instantiated for it to be used by the exit logic.
 						Vehicle vehicle = Vehicle.instantiateVehicleforExit(plate);
+						
+
 						
 						//Similarly to the enter logic it is mostly implemented on Vehicle but it has changes
 						//Depending on the subclass called

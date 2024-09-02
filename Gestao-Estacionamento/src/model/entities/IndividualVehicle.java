@@ -49,7 +49,7 @@ public class IndividualVehicle extends Vehicle {
 		//Transforming choices into string array to use on ticket, since it needs to have 2 different slots
 		int[] choices = getChoices();
 		if(choices.length == 1) {
-			numberValue = String.valueOf(choices);
+	        numberValue = String.valueOf(choices[0]);
 		} else {
 			//In case it hs more than 1 number it creates a String unifying them
 			numberValue = Arrays.stream(choices)
