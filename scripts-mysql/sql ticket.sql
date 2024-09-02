@@ -8,7 +8,7 @@ CREATE TABLE tickets (
     exitTime DATETIME,
     entryBarrier INT,
     exitBarrier INT,
-    slotNumber VARCHAR(10),
+    slotNumber VARCHAR(20),
     amountDue DECIMAL(10, 2) -- Isso faz com que seja decimal
 );
 

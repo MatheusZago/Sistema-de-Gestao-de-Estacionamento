@@ -5,22 +5,23 @@ import java.util.Scanner;
 
 import model.entities.Vehicle;
 
+//Service for the barriers
 public class BarrierService {
 
 	static Scanner sc = new Scanner(System.in);
 
-	// Serviços para fazer a questão de validação de qual cancela pode ser usada por
-	// qual veiculo
+	//service for the barrier to enter
 	public static int validateEntryBarriers(Vehicle vehicle) {
 
-//		System.out.println("Enter by the barriers: ");
+		System.out.println("Enter by the barriers: ");
 
-		String category = vehicle.getCategory().name(); // Transformando TipoModelo em String
+		String category = vehicle.getCategory().name(); 
 		String options;
 		String[] optionsArray;
 		int choice = 0;
 		boolean validOption = false;
 
+		//According to the category it will show different options for the car to enter
 		switch (category) {
 		case "CAR":
 		case "PUBLIC": {
@@ -44,6 +45,7 @@ public class BarrierService {
 
 		System.out.println();
 
+		//It creates a loop showing suggestion for the barrier to entry, and making the user choose
 		do {
 			System.out.println("A " + category + " can entry on the following barriers: " );
 			System.out.println(options);
@@ -51,10 +53,11 @@ public class BarrierService {
 
 			try {
 				choice = sc.nextInt();
+				 //If the barrier chosen is valid for that vehicle, this will become true and close the loop
+				validOption = false;
 
-				// Aqui verifica se a escolha está nas opções válidas
-				validOption = false; // Reinicia a validação para cada nova tentativa
-
+				//This will see if the optino the user choose is in the array, if it is then 
+				//validate option becomes true and the loop ends
 				for (String option : optionsArray) {
 					if (option.equals(String.valueOf(choice))) {
 						validOption = true;
@@ -69,7 +72,7 @@ public class BarrierService {
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("Invalid entry, please try a number.");
-				sc.next(); // Limpa o buffer do scanner
+				sc.next(); //Putting here to clear the scanner 
 			}
 
 		} while (validOption == false);
@@ -80,10 +83,11 @@ public class BarrierService {
 
 	}
 
+	//Almost the same as enter, but with the values changed
 	public static int validateExitBarriers(Vehicle vehicle) {
 		System.out.println("Leaving by the barrier: ");
 
-		String category = vehicle.getCategory().name(); // Transformando TipoModelo em String
+		String category = vehicle.getCategory().name(); 
 		String options;
 		String[] optionsArray;
 		int choice = 0;
@@ -115,8 +119,7 @@ public class BarrierService {
 			try {
 				choice = sc.nextInt();
 
-				// Aqui verifica se a escolha está nas opções válidas
-				validOption = false; // Reinicia a validação para cada nova tentativa
+				validOption = false; 
 
 				for (String option : optionsArray) {
 					if (option.equals(String.valueOf(choice))) {
@@ -132,12 +135,12 @@ public class BarrierService {
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("Invalid entry, please try a number.");
-				sc.next(); // Limpa o buffer do scanner
+				sc.next(); 
 			}
 
 		} while (validOption == false);
 
-		System.out.println();//Apenas para pular uma linha
+		System.out.println();
 		
 		return choice;
 

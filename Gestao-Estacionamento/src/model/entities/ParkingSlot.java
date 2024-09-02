@@ -2,8 +2,10 @@ package model.entities;
 
 import model.enums.SlotType;
 
+//Entity that represents a ParkingSlot 
 public class ParkingSlot {
 	
+	//Variables
 	private int id;
 	private SlotType type;
 	private boolean occupied;
@@ -19,7 +21,6 @@ public class ParkingSlot {
 	public int getId() {
 		return id;
 	}
-
 
 	public SlotType getType() {
 		return type;

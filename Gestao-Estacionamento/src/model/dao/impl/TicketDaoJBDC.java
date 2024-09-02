@@ -10,18 +10,31 @@ import db.DbException;
 import model.dao.TicketDao;
 import model.entities.Ticket;
 
+//Class made to implement its superclass and adjust its methods for the desired connection,
+//In this case being JBDC, this class is the Data Access Object of Ticket
 public class TicketDaoJBDC implements TicketDao {
 
+	//Creating connection
 	Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
 
+	//Constructor with connection
 	public TicketDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 
+	//Method to insert a ticket 
 	@Override
 	public void insert(int vehicleId, String plate, Timestamp entryTime, int entryBarrier, String numberValue) {
+		System.out.println("Numbers being used: ");
+		System.out.println("Vehicle id: " + vehicleId);
+		System.out.println("Plate: " + plate);
+		System.out.println("Time: " + entryTime);
+		System.out.println("Barrier: " + entryBarrier);
+		System.out.println("nSlots: " + numberValue);
+		
+		
 		try {
 			st = conn.prepareStatement("INSERT INTO tickets ("
 					+ "vehicleId, plate, entryTime, entryBarrier, slotNumber) " + "VALUES (?, ?, ?, ?, ?);");
@@ -31,8 +44,9 @@ public class TicketDaoJBDC implements TicketDao {
 			st.setInt(4, entryBarrier);
 			st.setString(5, numberValue);
 
+			
 			st.executeUpdate();
-			System.out.println("Insert de Ticket feito com sucesso.");
+//			System.out.println("Insert de Ticket feito com sucesso.");
 
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
@@ -40,6 +54,7 @@ public class TicketDaoJBDC implements TicketDao {
 
 	}
 
+	//Method to update a ticket upon exit
 	@Override
 	public void updateTicket(Timestamp exitTime, int exitBarrier, double amountDue, int vehicleId) {
 		try {
@@ -60,6 +75,8 @@ public class TicketDaoJBDC implements TicketDao {
 
 	}
 
+	//Method to find a ticket by its vehicle id and construct it with the available fields at the time of entry
+	@Override
 	public Ticket findEntryTicketByVehicleId(int vehicleId) {
 
 		int id = 0;
@@ -92,6 +109,8 @@ public class TicketDaoJBDC implements TicketDao {
 
 	}
 	
+	//Find a ticket by its vehicle id and constructs it with all fields
+	@Override
 	public Ticket findExitTicketByVehicleId(int vehicleId) {
 		int id = 0;
 		int vehicleIdReturned = 0;

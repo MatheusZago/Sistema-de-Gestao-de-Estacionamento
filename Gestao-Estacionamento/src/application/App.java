@@ -15,20 +15,21 @@ import model.entities.MonthlySubscriber;
 import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
-//Classe principal da aplicação
+//Main class of the applicatino
 public class App {
 
 	public static void main(String[] args) {
 
+		//Creating Objects used by the menu
 		VehicleDaoJBDC newVehicle = DaoFactory.createVehicleDaoJBDC();
-//		RegisteredDao newRegistered = DaoFactory.createRegisteredDao();
-		Scanner sc = new Scanner(System.in);
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+		Scanner sc = new Scanner(System.in);
 		boolean test = true;
 
 		try {
 
-			// Foi usado do while para que o programa execute pelo menos uma vez.
+			//The program uses a do while for it's menu, it shows the menu's options at least once
+			//And until the user chooses to exit it will repea
 			do {
 				{
 					System.out.println("=====CHOOSE AN OPTION=====");
@@ -40,31 +41,25 @@ public class App {
 					int choice = sc.nextInt();
 
 					switch (choice) {
-					case 1: { // IMPEDIR PLACAS DUPLICADAS
+					case 1: {
 						try {
-							// Passo 1, construir o carro que quer entrar (FEITO)
+							
 							System.out.println();
 							System.out.println("Let's register your entrance!");
 							System.out.print("Enter the plate number: ");
 							String plate = sc.next().toUpperCase();
-							
-							// 2 ) VERIFICAR SE O VEICULO ESTÁ CADASTRADO:
-							// Cria-lo se estiver cadastrado
+							//The system takes the plate of the car and calls this method with the purpose of 
+							///Instantiating a vehicle, the method is able to verify if the vehicle is enrolleed 
+							//If it is it creates e vehicle with the data the enrolleed table, if it isn't it constructs a new vehicle
 							Vehicle vehicle = Vehicle.InstantiateVehicleForEntry(plate);
-							
-
-
-							// Inserindo o novo veiculo na base de dados para que ele seja considerado
-//							// dentro do estacionamento
+							//Inserting the vehicle in the vehicle table
 							newVehicle.insert(vehicle);
 							
-//
-//							// Ele ta fazendo isso só pra epgar o objeto completo do banco de dados,
-//							// incluindo o ID que foi gerado
+							//This is used to add the id created by the vehicleTable on the vehicle object
 							Vehicle idRetrieve = newVehicle.findVehicleByPlate(vehicle.getPlate());
 							vehicle.setId(idRetrieve.getId());
-//
-//							// Está pegando a data e usando o formater pra deixar da forma certa
+
+							///This is taking a dateTime imput and parsing it as Timestamp for DB use
 							System.out.println("Enter the date for your arrival (dd/MM/yyyy HH:mm)");
 							sc.nextLine();
 							String dateTimeInput = sc.nextLine();
@@ -76,13 +71,15 @@ public class App {
 								System.out.println("Invalid date format. Please use the format dd/MM/yyyy HH:mm");
 								return;
 							}
-
-							//Transformando o date time padronizado em timeStamp
+							
 							Instant instant = arriveDateTime.atZone(ZoneId.systemDefault()).toInstant();
 							Timestamp arriveTimeStamp = Timestamp.from(instant);
 							
-
+							//This is calling the enter method of the vehicle, enter is a method mostly implemented
+							//But it has diferences depending on the subclass called (Public service, TRUCK etc)
 							vehicle.enter(vehicle, arriveTimeStamp);
+							
+							System.out.println("Parked with success!");
 
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -92,59 +89,61 @@ public class App {
 					}
 					case 2: {
 
+						//This part is simply taking the plate of a vehicle that is in the vehicle table and taking the time 
+						//that the person intends to leave 
 						System.out.println();
 						System.out.println("Let's register your exit!");
 						System.out.print("Enter the plate number: ");
 						String plate = sc.next().toUpperCase();
-						System.out.println();
-
-						
-						
-						
+						System.out.println();						
 						System.out.println("Enter the date for your exit (dd/MM/yyyy HH:mm)");
 						sc.nextLine();
 						String dateTimeInput = sc.nextLine();
-
+						
 						LocalDateTime leaveDateTime;
+						
 						try {
 							leaveDateTime = LocalDateTime.parse(dateTimeInput, dtf);
 						} catch (DateTimeParseException e) {
 							System.out.println("Invalid date format. Please use the format dd/MM/yyyy HH:mm");
 							return;
-						}
+						} 
 						
-						//Transformando o date time padronizado em timeStamp
+						//Again transformingo dateTime into Timestamp for DB use.
 						Instant instant = leaveDateTime.atZone(ZoneId.systemDefault()).toInstant();
 						Timestamp exitTimeStamp = Timestamp.from(instant);
 						
+						//The vehicle is being instantiated for it to be used by the exit logic.
 						Vehicle vehicle = Vehicle.instantiateVehicleforExit(plate);
 						
+
+						
+						//Similarly to the enter logic it is mostly implemented on Vehicle but it has changes
+						//Depending on the subclass called
 						vehicle.exit(vehicle, exitTimeStamp);
 
 						break;
 					}
-					case 3: {// BASICAMENTE FEITO, APENAS MELHORIAS E BUGS
-
-						// Aqu está puxando o cridor de veiculos do BD
+					case 3: {	
+						//Taking infos to create a vehicle
 						System.out.println("Let's register your vehicle!");
-
 						System.out.print("Enter vehicle plate: ");
 						String plate = sc.next().toUpperCase();
-						// TODO, dar um erro para evitar placas repetidas sem quebrar o programa.
 						System.out.print("Category (CAR, MOTORCYCLE, TRUCK): ");
 						String type = sc.next().toUpperCase();
 						VehicleCategory model = VehicleCategory.valueOf(type);
  
 						Vehicle registered; 
 
-						// Vai criar um veiculo especifio de acordo com o tipo dele, sendo caminhao ou
-						// avulso (carro ou moto)
+						//Depending on the model of the vehicle it will call a different constructor
+						//Only delivery trucks and montlhySubscrivers can be registered, so they are the only options
 						if (model == VehicleCategory.TRUCK) {
 							registered = new DeliveryTruck(plate, model);
-							((DeliveryTruck) registered).register(registered); // Ta especificando qual é.
+							//Usando downcast para especificar a subclass
+							((DeliveryTruck) registered).register(registered); 
 						} else if (model == VehicleCategory.CAR || model == VehicleCategory.MOTORCYCLE) {
 							registered = new MonthlySubscriber(plate, model);
-							((MonthlySubscriber) registered).register(registered); // Ta especificando qual é
+							((MonthlySubscriber) registered).register(registered);
 						} else {
 							// TODO ajeitar para usar um erro
 //							newRegistered = null;
@@ -154,6 +153,7 @@ public class App {
 						break;
 					}
 					case 4: {
+						//Simply breaks the while loop
 						System.out.println("Thank you for using the system!");
 						test = false;
 						break;
@@ -162,7 +162,7 @@ public class App {
 						throw new IllegalArgumentException("Unexpected value: " + choice);
 					}
 
-					// Apenas para pular linha
+					//Just to skip a line
 					System.out.println();
 
 				}

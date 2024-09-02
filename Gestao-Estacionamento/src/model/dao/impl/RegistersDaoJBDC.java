@@ -10,19 +10,23 @@ import db.DbException;
 import model.dao.RegistersDao;
 import model.entities.Register;
 
+//Class made to implement its superclass and adjust its methods for the desired connection,
+//In this case being JBDC, this class is the Data Access Object of Register
 public class RegistersDaoJBDC implements RegistersDao{
 	
+	//Creating connection
 	Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
 	
+	//Constructor with connection
 	public RegistersDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 	
+	//Method to insert register into the table
 	@Override
 	public void insert(Timestamp dateOfEntry, int vehicleId) {
-		System.out.println("Chamou o insert do register");
 		
 		try {
 			st = conn.prepareStatement("INSERT INTO registers (dateOfEntry, vehicleId)"
@@ -41,6 +45,7 @@ public class RegistersDaoJBDC implements RegistersDao{
 		}
 	}
 	
+	//Method to update the register when the create leave
 	@Override
 	public void update(Timestamp dateOfExit, int vehicleId) {
 		try {
@@ -58,6 +63,7 @@ public class RegistersDaoJBDC implements RegistersDao{
 		
 	}
 	
+	//Method that find a register by its vehicle id
 	@Override
 	public Register findRegisterByVehicleId(int vehicleId) {
 		 int id = 0;

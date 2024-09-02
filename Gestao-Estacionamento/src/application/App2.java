@@ -1,35 +1,35 @@
 package application;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-import model.entities.IndividualVehicle;
-import model.enums.VehicleCategory;
+import model.dao.DaoFactory;
+import model.dao.impl.ParkingSlotDaoJBDC;
+import model.entities.ParkingSlot;
 
 public class App2 {
-	
+	//This method is used solely to create the ParkingSlot Table
 	public static void main(String[] args) {
 		
-		//Para iniciar as vagas
-//		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
-//		slot.createTable();
-//		
+		//This method creates parkingSlot tables with all the slots free for use
+		ParkingSlotDaoJBDC slot = DaoFactory.createParkingSlotDaoJBDC();
+//		slot.createTable();	
 		
-		IndividualVehicle vehicle = new IndividualVehicle(1, "OBA123", VehicleCategory.MOTORCYCLE);
-////		
-		LocalDateTime localDateTime = LocalDateTime.of(2024, 8, 30, 22, 0);
-		Timestamp timestamp = Timestamp.valueOf(localDateTime);
+		List<Integer> availableSlotIds = new ArrayList<>(); // Para armazenar IDs de slots disponíveis
 		
-		System.out.println(vehicle.charge(20, timestamp));
-//		
-//		TicketDaoJBDC ticket = DaoFactory.createTicketDaoJBDC();
-//		Ticket ticketTeste =  ticket.findEntryTicketByVehicleId(20);
-//		
-//		
-//		
-//		System.out.println(ticketTeste.printTicketEntry());
+		List<ParkingSlot> list = slot.findByOccupied(false);
+		
+		list.forEach(slotX -> {
+//			System.out.println(slotX);
+			availableSlotIds.add(slotX.getId());
+		});
 		
 		
+		
+		availableSlotIds.forEach(System.out::println);
+		
+		
+//		slot.findByOccupied(true);
 		
 		
 	}

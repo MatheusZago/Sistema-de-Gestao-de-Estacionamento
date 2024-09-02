@@ -2,6 +2,7 @@ package model.entities;
 
 import java.sql.Timestamp;
 
+//Class to represent a register
 public class Register {
 	
 	private int id;
@@ -54,6 +55,7 @@ public class Register {
 		this.id_vehicle = id_vehicle;
 	}
 
+	//Different prints for different forms of register
 	public String printRegisterEntry() {
 		return "-----------------------------"
 				+ "Register id:" + id +  ", id_vehicle: " + id_vehicle

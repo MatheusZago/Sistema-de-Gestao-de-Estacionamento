@@ -2,6 +2,7 @@ package model.entities;
 
 import java.sql.Timestamp;
 
+//Class to represent a Ticket
 public class Ticket {
 
 	private int id;
@@ -14,6 +15,7 @@ public class Ticket {
 	private String slotNumber;
 	private double amountDue;
 
+	//Multiple Constructors for multiple uses
 	public Ticket(int id, int vehicleId, String plate, Timestamp entryTime, int entryBarrier, String slotNumber) {
 		this.id = id;
 		this.vehicleId = vehicleId;
@@ -112,9 +114,10 @@ public class Ticket {
 		this.vehicleId = idVehicle;
 	}
 
+	//Different prints for different ticket forms
 	public String printTicketEntry() {
 		return  "-----------------------------"
-				+ "Ticket: " + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
+				+ "\nTicket: " + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
 				+ "\n" + "Entered at: " + entryTime + " Through barrier: " + entryBarrier
 				+ "\n" + "Parked at: " + slotNumber 
 				+ "\n-----------------------------";
@@ -124,7 +127,7 @@ public class Ticket {
 		
 		String formattedAmountDue = String.format("%.2f", amountDue);
 		return "-----------------------------"
-				+ "Ticket:" + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
+				+ "\nTicket:" + id + " plate: " + plate +  " id-vehicle: " + vehicleId  
 				+ "\n" + "Entered: " + entryTime + " Through barrier: "+ entryBarrier 
 				+ "\nLeft " + exitTime + " Thought barrier: " + exitBarrier 
 				+ "\nParked at: " + slotNumber+ " value: R$" + formattedAmountDue

@@ -13,16 +13,21 @@ import model.entities.PublicService;
 import model.entities.Vehicle;
 import model.enums.VehicleCategory;
 
+//Class made to implement its superclass and adjust its methods for the desired connection,
+//In this case being JBDC, this class is the Data Access Object of Vehicle
 public class VehicleDaoJBDC implements VehicleDao {
 
+	//Creating connection and variables
 	Connection conn = null;
 	PreparedStatement st = null;
 	ResultSet rs = null;
 
+	//Constructor with Connection
 	public VehicleDaoJBDC(Connection conn) {
 		this.conn = conn;
 	}
 
+	//Method to insert a vehicle into the vehicle table
 	@Override
 	public void insert(Vehicle vehicle) {
 		try {
@@ -41,7 +46,7 @@ public class VehicleDaoJBDC implements VehicleDao {
 
 	}
 
-	// USAR ISSO PRA VER SE EXISTE NA TABELA CADASTRADA
+	//Method to find a vehicle and instantiate it
 	@Override
 	public Vehicle findVehicleByPlate(String plate) {
 		try {
@@ -50,18 +55,17 @@ public class VehicleDaoJBDC implements VehicleDao {
 			st.setString(1, plate);
 			rs = st.executeQuery();
 
-			// Transformando o resultSet em objeto java
+			//Transform result set into java object
 			if (rs.next()) {
 
 				int id = rs.getInt("id");
 				String returnedPlate = rs.getString("plate");
 				String stringCategory = rs.getString("category");
-//					//Transformando a String em Enum
 				VehicleCategory returnedCategory = VehicleCategory.valueOf(stringCategory.toUpperCase());
 
 				Vehicle registered;
 
-				// De acordo com a categoria retornada ele devolve um objeto diferente
+				//According to category it creates a different type of vehicle
 				if (returnedCategory == VehicleCategory.TRUCK) {
 					registered = new DeliveryTruck(id, returnedPlate, returnedCategory);
 					return registered;
@@ -84,8 +88,9 @@ public class VehicleDaoJBDC implements VehicleDao {
 		return null;
 	}
 
+	//Method to delete a vehicle by its id
+	@Override
 	public void deleteVehicle(int id) {
-
 		
 		try {
 			st = conn.prepareStatement("DELETE FROM vehicles WHERE id = ?;");

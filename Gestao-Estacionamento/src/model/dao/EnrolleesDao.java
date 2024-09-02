@@ -2,11 +2,12 @@ package model.dao;
 
 import model.entities.Vehicle;
 
-//Interface para a implementação de possíveis modosDAO, no caso do projeto só tem JBDC mas ta aqui por boa prática
+//Interface used to keep the necessary methods for other types of DB connections
+//It is only used by JBDC in this project,
 public interface EnrolleesDao {
 	
 	void insert(Vehicle vehicle);
 	Vehicle FindEnrolleesByPlate(String plate);
-
+	boolean isEnrolleed(String plate);
 	
 }
