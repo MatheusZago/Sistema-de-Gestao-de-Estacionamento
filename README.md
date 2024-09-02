@@ -3,52 +3,76 @@
 Certifique-se de ter as seguintes ferramentas instaladas:
 - Java Development Kit (JDK) 11 ou superior
 - MySql ver 8.0 ou superior.
+
+Dependências
 - Mysql-Connector-j-9.0.0
   
 ## Instalação
 Siga os passos abaixo para configurar o projeto no seu ambiente
 
 1. **Clone o repositório**
+Em um respositório git execute o seguinte comando:
+
+1) Crie uma pasta para conter o projeto.
+2) Abra o gitbash na pasta desejada
+3) Digite: 
+   
  ```bash
  git clone https://github.com/MatheusZago/Sistema-de-Gestao-de-Estacionamento.git
  ```
  
-2. **Compile o projeto**
- 
- ```bash
-cd Sistema-de-Gestao-de-Estacionamento
-javac -d bin src/**/*.java
- ```
- 
- 3. **Execute o projeto**
-Em um banco de dados mysql abra os arquivos da pasta scripts-mysql e execute-os da seguinte maneira:
+2. **Importe o projeto**
 
-sql createdatabase and enrollees table.sql - Execute a criação da database e da tablea.
-sql registers.sql - Execute a criação da tabela.
-sql ticket.sql - Execute a criação da tabela.
-sql vehicle.sql - Execute a criação da tabela.
-sql vehicle.sql - Execute a criação da tabela.
+1) Abra sua IDE de escolha (Recomendado STS ou Eclipse)  no workspace do projeto clonado
+2) Importe o projeto como Existing Projects on Workspace.
+3) Abra a opção de navegar, selecione o projeto e clique em finish.
+
+3. **Adicione a biblioteca Mysql-Connector-j-9.0.0**
+
+1) Acesse https://dev.mysql.com/downloads/connector/j/ ou pesquise por mysql java connector e entre no link mysql::
+2) Selecione a opção de "Platform Independent" e faça o download. 3
+3) Abra o arquivo zip, localize mysql-connector-j-9.0.0.jar e o extraia para uma pasta de fácil acesso.
+
+4) Abra o projeto em sua IDE desejada, e acesse Propriedades > Java Build Path > Libraries
+5) Selecione Class Path, e em seguida clique em Add external Jars.
+6) Localize mysql-connector-j-9.0.0.jar e o abra no classPath.
+7) Por fim, clique em "apply" e "apply on close"
+ 
+ 3. **Execute os SQL**
+Em uma conexão mysql abra os arquivos da pasta scripts-mysql e execute-os da seguinte maneira:
+(Cada arquivo também tem um select para consulta em tempo real)
+
+1) sql createdatabase and enrollees table.sql - Execute a criação da database e da tablea.
+2) sql registers.sql - Execute a criação da tabela.
+3) sql ticket.sql - Execute a criação da tabela.
+4) sql vehicle.sql - Execute a criação da tabela.
+5) sql vehicle.sql - Execute a criação da tabela.
+6) Para inicializar a tabela parkingslots com todos os espaços desejados acesse 
+* `src/application/App2`: E execute o metodo CreateTable.
+* 
 sql parkingslots.sql - O arquivo serve mais para ajuda de consulta.
 
-Para inicializar a tabela parkingslots com todos os espaços desejados acesse 
-* `src/application/App2`: E execute o metodo CreateTable.
 
-Ele irá criar uma tabela vazia.
  
- 
- Para executar o projeto, use o comando:
- 
- ```bash
-java -cp bin application.App
- ```
+ 4. **Atualize db.properties**
+
+1)Em sua IDE no projeto acesse o arquivo db.properties.
+1)Atualize o user caso a conexão não esteja usando root.
+2)Atualize a senha de sua conexão. (a oferecida é de testes)
  
 ### Estrutura do Projeto
-* `src/application/java`: Onde o código main do projeto esta.
-* `src/db/java`: Onde estão as classes para instanciamento e uso do Banco de Dados.
-* ' scripts-mysql : Pasta onde estão todos os scripts para criação e verificação do banco de dados e tabelas. 
-Arquivo README.md 3
+* `src/app`: Onde o código main do projeto esta.
+* `src/app2`: Main secundário feito para testes e para iniciar a tabela ParkingSlots.
+* `src/db`: Onde estão as classes para instanciamento e uso do Banco de Dados.
+* `src/model.dao`: Onde as interfaces e DaFactory estão 
+* `src/model.dao.impl`: Onde as interfaces são implementadas para JBDC.
+* `src/model.entites`: Pacote onde as entidades do projeto estão.
+* `src/model.enums`: Onde os enums do projeto estão.
+* `src/model.services`: Onde os services estão.
 * `db.properties`: Documento com as informações do banco de dados.
 
+scripts-mysql : Pasta onde estão todos os scripts para criação e verificação do banco de dados e tabelas. 
+Arquivo README.md 3
 
 ### Contribuindo
 Se você quiser contribuir para este projeto, siga as etapas a
